@@ -1,26 +1,39 @@
 package org.choidh.toby_project.domain;
 
+import lombok.NoArgsConstructor;
 import org.choidh.toby_project.connection.ConnectionMaker;
-import org.choidh.toby_project.connection.SimpleConnectionMaker;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import javax.sql.DataSource;
+import java.sql.*;
 
+@NoArgsConstructor
 public class UserDao {
 
-    private ConnectionMaker connectionMaker;
+    private DataSource dataSource;
 
-    public UserDao() {
+//    public UserDao() {
 //        this.connectionMaker = new SimpleConnectionMaker();
+//    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+//    public UserDao(ConnectionMaker connectionMaker) {
+//        this.connectionMaker = connectionMaker;
+//    }
+
+    public void deleteAll() throws SQLException, ClassNotFoundException {
+        Connection connection = this.dataSource.getConnection();
+        PreparedStatement ps = connection.prepareStatement("delete from user");
+        ps.executeUpdate();
+
+        ps.close();
+        connection.close();
     }
 
     public void add(User user) throws Exception {
-        Connection conn = this.connectionMaker.makeConnection();
+        Connection conn = this.dataSource.getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "insert into user(id, name, password) values(?, ?, ?)"
@@ -39,7 +52,7 @@ public class UserDao {
     }
 
     public User get(String id) throws Exception{
-        Connection conn = this.connectionMaker.makeConnection();
+        Connection conn = this.dataSource.getConnection();
 
         PreparedStatement ps = conn.prepareStatement(
                 "select * from user where id = ?"
