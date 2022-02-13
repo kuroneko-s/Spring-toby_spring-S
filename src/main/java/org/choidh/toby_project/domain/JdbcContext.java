@@ -1,16 +1,24 @@
 package org.choidh.toby_project.domain;
 
+import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.statement.AddStatement;
 import org.choidh.toby_project.statement.CountStatement;
 import org.choidh.toby_project.statement.DeleteStatement;
 import org.choidh.toby_project.statement.Statement;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Slf4j
 public class JdbcContext {
+    private DataSource dataSource;
+
+    public JdbcContext(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     // 전략 패턴
     public int jdbcContextWithStatementStrategy(Statement st) {

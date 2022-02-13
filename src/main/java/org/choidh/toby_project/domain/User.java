@@ -1,10 +1,12 @@
 package org.choidh.toby_project.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
