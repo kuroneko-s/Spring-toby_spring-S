@@ -2,6 +2,9 @@ package org.choidh.toby_project;
 
 import org.choidh.toby_project.domain.User;
 import org.choidh.toby_project.domain.UserDao;
+import org.choidh.toby_project.statement.AddStatement;
+import org.choidh.toby_project.statement.CountStatement;
+import org.choidh.toby_project.statement.DeleteStatement;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +43,42 @@ class AppTests {
         // 아래처럼 쓰면 테스트 코드 속도가 엄청빨라짐
         // DataSource dataSource = new SingleConnectionDataSource("jdbc:h2:~/toby", "sa", "", true);
         // this.userDao.setDataSource(dataSource);
-        userDao.deleteAll();
+
+        // ~before~
+        // userDao.deleteAll();
+
+        // ~after~
+        userDao.jdbcContextWithStatementStrategy(new DeleteStatement());
+    }
+
+    @Test
+    @DisplayName("deleteAllWithAnony() 검증")
+    void validDeleteAllWithAnony() throws Exception {
+        userDao.deleteAllAnnony();
+        assertEquals(userDao.getCount(), 0);
+        userDao.addWithAnonyClass(user_1);
+        assertEquals(userDao.getCount(), 1);
+        userDao.deleteAllAnnony();
+        assertEquals(userDao.getCount(), 0);
+    }
+
+    @Test
+    @DisplayName("getCount() 검증 - 전략 패턴 사용")
+    void validGetCountWithStrategy() throws Exception{
+        int result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        assertEquals(result, 0);
+
+        userDao.add(user_1);
+        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        assertEquals(result, 1);
+
+        userDao.add(user_2);
+        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        assertEquals(result, 2);
+
+        userDao.add(user_3);
+        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        assertEquals(result, 3);
     }
 
     @Test
@@ -60,6 +98,45 @@ class AppTests {
         userDao.add(user_3);
         result = userDao.getCount();
         assertEquals(result, 3);
+    }
+
+    @Test
+    @DisplayName("add() 테스트 _ 전략 패턴")
+    void validAddByStrategy() throws Exception {
+        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 0);
+
+        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_1));
+        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_2));
+
+        final int after = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        assertEquals(after, 2);
+
+        final User newUser = userDao.get("springex1");
+
+        assertEquals(newUser.getName(), user_1.getName());
+        assertNotEquals(newUser.getName(), user_2.getName());
+
+        assertEquals(newUser.getPassword(), user_1.getPassword());
+        assertNotEquals(newUser.getPassword(), user_2.getPassword());
+    }
+
+    @Test
+    @DisplayName("add() 테스트 _ 익명클래스")
+    void validAddByAnonyClass() throws Exception {
+        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 0);
+
+        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_1));
+        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_2));
+        userDao.add(user_1);
+        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 2);
+
+        final User newUser = userDao.get("springex1");
+
+        assertEquals(newUser.getName(), user_1.getName());
+        assertNotEquals(newUser.getName(), user_2.getName());
+
+        assertEquals(newUser.getPassword(), user_1.getPassword());
+        assertNotEquals(newUser.getPassword(), user_2.getPassword());
     }
 
     @Test
