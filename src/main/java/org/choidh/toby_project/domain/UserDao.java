@@ -7,12 +7,9 @@ import org.choidh.toby_project.statement.CountStatement;
 import org.choidh.toby_project.statement.DeleteStatement;
 import org.choidh.toby_project.statement.Statement;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Slf4j
@@ -21,7 +18,7 @@ public class UserDao {
 
     private JdbcContext context;
 
-    public UserDao(JdbcContext context) {
+    public void setContext(JdbcContext context) {
         this.context = context;
     }
 
@@ -65,28 +62,11 @@ public class UserDao {
     }
 
     public User get(String id) throws DataAccessException {
-        try (
-                Connection conn = con.dataSource.getConnection();
-                PreparedStatement ps = conn.prepareStatement("select * from user where id = ?")
-        ) {
+        return this.context.getJdbcContextWithStatementStrategy(conn -> {
+            final PreparedStatement ps = conn.prepareStatement("select * from user where id = ?");
             ps.setString(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return User.builder()
-                            .id(rs.getString("id"))
-                            .name(rs.getString("name"))
-                            .password(rs.getString("password"))
-                            .build();
-                }
-            } catch (SQLException err) {
-                log.error(err.getMessage());
-            }
-        } catch (SQLException err) {
-            log.error(err.getMessage());
-        }
-
-        throw new EmptyResultDataAccessException(1);
+            return ps;
+        });
     }
 
     public int getCount() {

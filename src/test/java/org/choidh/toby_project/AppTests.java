@@ -27,6 +27,7 @@ class AppTests {
     // GenericXmlApplicationContext context = new GenericXmlApplicationContext("classpath:application-context-test.xml");
     // ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application-context-test.xml", "ExamplePath.class);
     @Autowired private UserDao userDao;
+
     private static User user_1;
     private static User user_2;
     private static User user_3;

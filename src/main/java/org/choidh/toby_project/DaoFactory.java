@@ -3,6 +3,7 @@ package org.choidh.toby_project;
 import org.choidh.toby_project.connection.ConnectionMaker;
 import org.choidh.toby_project.connection.CountConnectionMaker;
 import org.choidh.toby_project.connection.SimpleConnectionMaker;
+import org.choidh.toby_project.domain.JdbcContext;
 import org.choidh.toby_project.domain.UserDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,15 @@ public class DaoFactory {
     @Bean
     public UserDao userDAO() {
         UserDao userDao = new UserDao();
-        userDao.setDataSource(dataSource());
+        userDao.setContext(jdbcContext());
         return userDao;
+    }
+
+    @Bean
+    public JdbcContext jdbcContext() {
+        JdbcContext jdbcContext = new JdbcContext();
+        jdbcContext.setDataSource(dataSource());
+        return jdbcContext;
     }
 
     @Bean

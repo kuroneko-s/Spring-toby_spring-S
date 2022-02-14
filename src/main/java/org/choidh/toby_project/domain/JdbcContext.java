@@ -5,6 +5,7 @@ import org.choidh.toby_project.statement.AddStatement;
 import org.choidh.toby_project.statement.CountStatement;
 import org.choidh.toby_project.statement.DeleteStatement;
 import org.choidh.toby_project.statement.Statement;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 public class JdbcContext {
     private DataSource dataSource;
 
-    public JdbcContext(DataSource dataSource) {
+    public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -29,9 +30,7 @@ public class JdbcContext {
         ) {
             if (st instanceof CountStatement){
                 try (ResultSet rs = ps.executeQuery() ) {
-                    if ( rs.next() ) {
-                        result = rs.getInt(1);
-                    }
+                    if ( rs.next() ) result = rs.getInt(1);
                 }
             } else if (st instanceof DeleteStatement || st instanceof AddStatement){
                 ps.executeUpdate();
@@ -42,6 +41,26 @@ public class JdbcContext {
         }
 
         return result;
+    }
+
+    public User getJdbcContextWithStatementStrategy(Statement st) {
+        try(
+                final Connection conn = this.dataSource.getConnection();
+                final PreparedStatement ps = st.getStatement(conn);
+                final ResultSet rs = ps.executeQuery();
+        ){
+            if (rs.next()){
+                return User.builder()
+                        .id(rs.getString("id"))
+                        .name(rs.getString("name"))
+                        .password(rs.getString("password"))
+                        .build();
+            }
+        }catch (SQLException err) {
+            log.error(err.getMessage());
+        }
+
+        throw new EmptyResultDataAccessException(1);
     }
 
 }
