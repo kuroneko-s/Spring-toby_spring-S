@@ -8,18 +8,22 @@ import org.choidh.toby_project.statement.DeleteStatement;
 import org.choidh.toby_project.statement.Statement;
 import org.springframework.dao.DataAccessException;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Slf4j
-@NoArgsConstructor
-public class UserDao {
 
+public class UserDao {
     private JdbcContext context;
 
-    public void setContext(JdbcContext context) {
-        this.context = context;
+    // jdbcContext를 빈으로 등록하지 않고 의존을 하는 방향을 조금씩 빠군 방법
+    // UserDao - JdbcContext - DataSource 이렇게 참조를 하곤 있는데
+    // 실질적으로는 UserDao가 DataSource를 DI 받아서 참조를 넣어주고 있음
+    public void setDataSource(DataSource dataSource) {
+        this.context = new JdbcContext();
+        context.setDataSource(dataSource);
     }
 
     public void deleteAll() {
