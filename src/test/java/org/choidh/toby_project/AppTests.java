@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,17 +50,53 @@ class AppTests {
         // userDao.deleteAll();
 
         // ~after~
-        userDao.deleteAllAnnony();
+        userDao.deleteAll();
+    }
+
+    @Test
+    @DisplayName("getAll() 검증_데이터가 없을때")
+    public void validgetAllWithNoneData() {
+        userDao.deleteAll();
+        List<User> users = userDao.getAll();
+        assertEquals(users.size(), 0);
+    }
+
+    @Test
+    @DisplayName("getAll() 검증")
+    public void validgetAll() {
+        userDao.add(user_1);
+        List<User> user1 = userDao.getAll();
+        assertEquals(user1.size(), 1);
+        checkSameUser(user1.get(0), user_1);
+
+        userDao.add(user_2);
+        List<User> user2 = userDao.getAll();
+        assertEquals(user2.size(), 2);
+        checkSameUser(user2.get(0), user_1);
+        checkSameUser(user2.get(1), user_2);
+
+        userDao.add(user_3);
+        List<User> user3 = userDao.getAll();
+        assertEquals(user3.size(), 3);
+        checkSameUser(user3.get(0), user_1);
+        checkSameUser(user3.get(1), user_2);
+        checkSameUser(user3.get(2), user_3);
+    }
+
+    private void checkSameUser(User user, User user_1) {
+        assertEquals(user.getId(), user_1.getId());
+        assertEquals(user.getName(), user_1.getName());
+        assertEquals(user.getPassword(), user_1.getPassword());
     }
 
     @Test
     @DisplayName("deleteAllWithAnony() 검증")
     void validDeleteAllWithAnony() throws Exception {
-        userDao.deleteAllAnnony();
+        userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
-        userDao.addWithAnonyClass(user_1);
+        userDao.add(user_1);
         assertEquals(userDao.getCount(), 1);
-        userDao.deleteAllAnnony();
+        userDao.deleteAll();
         assertEquals(userDao.getCount(), 0);
     }
 
@@ -106,8 +143,8 @@ class AppTests {
     void validAddByStrategy() throws Exception {
         assertEquals(userDao.getCount(), 0);
 
-        userDao.addWithAnonyClass(user_1);
-        userDao.addWithAnonyClass(user_2);
+        userDao.add(user_1);
+        userDao.add(user_2);
 
         final int after = userDao.getCount();
         assertEquals(after, 2);
@@ -126,9 +163,8 @@ class AppTests {
     void validAddByAnonyClass() throws Exception {
         assertEquals(userDao.getCount(), 0);
 
-        userDao.addWithAnonyClass(user_1);
-        userDao.addWithAnonyClass(user_2);
         userDao.add(user_1);
+        userDao.add(user_2);
         assertEquals(userDao.getCount(), 2);
 
         final User newUser = userDao.get("springex1");

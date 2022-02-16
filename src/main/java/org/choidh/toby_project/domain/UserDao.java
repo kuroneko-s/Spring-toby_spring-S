@@ -1,39 +1,27 @@
 package org.choidh.toby_project.domain;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.choidh.toby_project.statement.AddStatement;
-import org.choidh.toby_project.statement.CountStatement;
-import org.choidh.toby_project.statement.DeleteStatement;
-import org.choidh.toby_project.statement.Statement;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 
 public class UserDao {
-    private JdbcContext context;
+    private JdbcTemplate jdbcTemplate;
+    private final RowMapper<User> userRowMapper = (rs, rowNum) -> new User(rs.getString("id"), rs.getString("name"), rs.getString("password"));
 
-    // jdbcContext를 빈으로 등록하지 않고 의존을 하는 방향을 조금씩 빠군 방법
-    // UserDao - JdbcContext - DataSource 이렇게 참조를 하곤 있는데
-    // 실질적으로는 UserDao가 DataSource를 DI 받아서 참조를 넣어주고 있음
     public void setDataSource(DataSource dataSource) {
-        this.context = new JdbcContext();
-        context.setDataSource(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     public void deleteAll() {
-        context.jdbcContextWithStatementStrategy(new DeleteStatement());
+        this.jdbcTemplate.update("delete from user");
     }
-
-    public void deleteAllAnnony() {
-        this.context.executeSql("delete from user");
-    }
-
+/*
     // 전략 패턴으로 인해 클래스가 많아지는 현상을 줄이는 방법중 하나는 내부 클래스를 선언하는 것
     public void addWithInnerClass(final User user) {
         class AddStatement implements Statement{
@@ -47,29 +35,35 @@ public class UserDao {
             }
         }
 
-        context.jdbcContextWithStatementStrategy(new AddStatement());
+        jdbcTemplate.jdbcContextWithStatementStrategy(new AddStatement());
     }
+ */
 
+/*
     // 익명 클래스 사용
     public void addWithAnonyClass(final User user) {
-        context.executeSql("insert into user(id, name, password) values(?, ?, ?)"
+        jdbcTemplate.executeSql("insert into user(id, name, password) values(?, ?, ?)"
                         , user.getId(), user.getName(), user.getPassword());
     }
+ */
 
     public void add(User user) {
-        context.jdbcContextWithStatementStrategy(new AddStatement(user));
+        this.jdbcTemplate.update("insert into user(id, name, password) values(?, ?, ?)", user.getId(), user.getName(), user.getPassword());
     }
 
     public User get(String id) throws DataAccessException {
-        return this.context.getJdbcContextWithStatementStrategy(conn -> {
-            final PreparedStatement ps = conn.prepareStatement("select * from user where id = ?");
-            ps.setString(1, id);
-            return ps;
-        });
+        return this.jdbcTemplate.queryForObject("select * from user where id = ?"
+                , this.userRowMapper
+                , id);
     }
 
     public int getCount() {
-        return context.jdbcContextWithStatementStrategy(new CountStatement());
+        return this.jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+    }
+
+    public List<User> getAll() {
+        return this.jdbcTemplate.query("select * from user order by id"
+                , this.userRowMapper);
     }
 
     // method로 분리 or Statement처럼 전략패턴 사용
