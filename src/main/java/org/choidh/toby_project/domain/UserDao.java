@@ -31,7 +31,7 @@ public class UserDao {
     }
 
     public void deleteAllAnnony() {
-        context.jdbcContextWithStatementStrategy(conn -> conn.prepareStatement("delete from user"));
+        this.context.executeSql("delete from user");
     }
 
     // 전략 패턴으로 인해 클래스가 많아지는 현상을 줄이는 방법중 하나는 내부 클래스를 선언하는 것
@@ -52,13 +52,8 @@ public class UserDao {
 
     // 익명 클래스 사용
     public void addWithAnonyClass(final User user) {
-        context.jdbcContextWithStatementStrategy(conn -> {
-            final PreparedStatement ps = conn.prepareStatement("insert into user(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        });
+        context.executeSql("insert into user(id, name, password) values(?, ?, ?)"
+                        , user.getId(), user.getName(), user.getPassword());
     }
 
     public void add(User user) {

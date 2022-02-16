@@ -21,12 +21,26 @@ public class JdbcContext {
         this.dataSource = dataSource;
     }
 
+    public void executeSql(final String query) {
+        this.jdbcContextWithStatementStrategy(conn -> conn.prepareStatement(query));
+    }
+
+    public void executeSql(final String query, final String... args) {
+        this.jdbcContextWithStatementStrategy(conn -> {
+            final PreparedStatement ps = conn.prepareStatement(query);
+            for (int i = 1; i <= args.length; i++) {
+                ps.setString(i, args[i]);
+            }
+            return ps;
+        });
+    }
+
     // 전략 패턴
     public int jdbcContextWithStatementStrategy(Statement st) {
         int result = 0;
         try (
                 final Connection conn = dataSource.getConnection();
-                final PreparedStatement ps = st.getStatement(conn);
+                final PreparedStatement ps = st.getStatement(conn); // 외부로 받은 콜백(?)으로 부터 DI가 발생하는 지점
         ) {
             if (st instanceof CountStatement){
                 try (ResultSet rs = ps.executeQuery() ) {

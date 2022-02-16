@@ -49,7 +49,7 @@ class AppTests {
         // userDao.deleteAll();
 
         // ~after~
-        userDao.jdbcContextWithStatementStrategy(new DeleteStatement());
+        userDao.deleteAllAnnony();
     }
 
     @Test
@@ -66,19 +66,19 @@ class AppTests {
     @Test
     @DisplayName("getCount() 검증 - 전략 패턴 사용")
     void validGetCountWithStrategy() throws Exception{
-        int result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        int result = userDao.getCount();
         assertEquals(result, 0);
 
         userDao.add(user_1);
-        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        result = userDao.getCount();
         assertEquals(result, 1);
 
         userDao.add(user_2);
-        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        result = userDao.getCount();
         assertEquals(result, 2);
 
         userDao.add(user_3);
-        result = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        result = userDao.getCount();
         assertEquals(result, 3);
     }
 
@@ -104,12 +104,12 @@ class AppTests {
     @Test
     @DisplayName("add() 테스트 _ 전략 패턴")
     void validAddByStrategy() throws Exception {
-        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 0);
+        assertEquals(userDao.getCount(), 0);
 
-        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_1));
-        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_2));
+        userDao.addWithAnonyClass(user_1);
+        userDao.addWithAnonyClass(user_2);
 
-        final int after = userDao.jdbcContextWithStatementStrategy(new CountStatement());
+        final int after = userDao.getCount();
         assertEquals(after, 2);
 
         final User newUser = userDao.get("springex1");
@@ -124,12 +124,12 @@ class AppTests {
     @Test
     @DisplayName("add() 테스트 _ 익명클래스")
     void validAddByAnonyClass() throws Exception {
-        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 0);
+        assertEquals(userDao.getCount(), 0);
 
-        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_1));
-        userDao.jdbcContextWithStatementStrategy(new AddStatement(user_2));
+        userDao.addWithAnonyClass(user_1);
+        userDao.addWithAnonyClass(user_2);
         userDao.add(user_1);
-        assertEquals(userDao.jdbcContextWithStatementStrategy(new CountStatement()), 2);
+        assertEquals(userDao.getCount(), 2);
 
         final User newUser = userDao.get("springex1");
 
