@@ -1,13 +1,10 @@
 package org.choidh.toby_project;
 
 import org.choidh.toby_project.connection.CountConnectionMaker;
-import org.choidh.toby_project.connection.SimpleConnectionMaker;
 import org.choidh.toby_project.domain.User;
-import org.choidh.toby_project.domain.UserDao;
+import org.choidh.toby_project.domain.UserDaoJdbc;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -24,20 +21,20 @@ public class AppRunner implements ApplicationRunner {
         user.setName("dong");
         user.setPassword("test");
 
-        UserDao userDAO = new DaoFactory().userDAO();
-        userDAO.deleteAll();
-        userDAO.add(user);
+        UserDaoJdbc userDAOJdbc = new DaoFactory().userDAO();
+        userDAOJdbc.deleteAll();
+        userDAOJdbc.add(user);
         System.out.println(user.toString());
 
-        User newUser = userDAO.get("1");
+        User newUser = userDAOJdbc.get("1");
         System.out.println(newUser.toString());
 
         CountConnectionMaker connectionMaker = context.getBean("countConnectionMaker", CountConnectionMaker.class);
         System.out.println(connectionMaker.getClass().getName());
 
         /*
-        UserDao userDAO = context.getBean("userDAO", UserDao.class);
-        userDAO.createConnection();
+        UserDaoJdbc userDAOJdbc = context.getBean("userDAOJdbc", UserDaoJdbc.class);
+        userDAOJdbc.createConnection();
 
         try {
 

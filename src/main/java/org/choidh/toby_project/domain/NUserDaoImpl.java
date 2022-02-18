@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 @Deprecated
-public class DUserDao extends UserDao {
+public class NUserDaoImpl extends UserDaoJdbc {
     // abstract to another class method
     protected Connection getConnection() throws Exception {
         Class.forName("org.h2.Driver");
