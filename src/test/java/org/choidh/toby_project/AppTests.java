@@ -1,20 +1,18 @@
 package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
+import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.User;
 import org.choidh.toby_project.domain.UserDao;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -23,10 +21,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
 //@DirtiesContext
-class AppTests {
+class AppTests extends TestConfig{
     // AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
     // GenericXmlApplicationContext context = new GenericXmlApplicationContext("classpath:application-context-test.xml");
     // ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application-context-test.xml", "ExamplePath.class);
@@ -39,9 +35,9 @@ class AppTests {
 
     @BeforeAll
     public static void beforeAll() {
-        user_1 = new User("springex1", "CHOI", "1234");
-        user_2 = new User("springex2", "DONGHYUK", "4321");
-        user_3 = new User("springex3", "CHOIDONGHYUK", "9876");
+        user_1 = new User("springex1", "CHOI", "1234", Level.BASIC, 1, 0);
+        user_2 = new User("springex2", "DONGHYUK", "4321", Level.SILVER, 55, 10);
+        user_3 = new User("springex3", "CHOIDONGHYUK", "9876", Level.GOLD, 100, 40);
     }
 
     @BeforeEach
@@ -91,6 +87,9 @@ class AppTests {
         assertEquals(user.getId(), user_1.getId());
         assertEquals(user.getName(), user_1.getName());
         assertEquals(user.getPassword(), user_1.getPassword());
+        assertEquals(user.getLevel(), user_1.getLevel());
+        assertEquals(user.getLogin(), user_1.getLogin());
+        assertEquals(user.getRecommend(), user_1.getRecommend());
     }
 
     @Test
@@ -245,5 +244,26 @@ class AppTests {
                 throw translator.translate(null, null, sqlEx);
             }
         });
+    }
+
+    @Test
+    @DisplayName("update() 성공")
+    public void update() throws CloneNotSupportedException {
+        this.userDaoJdbc.add(user_1);
+        this.userDaoJdbc.add(user_2);
+        User newUser = user_1.clone();
+        newUser.setName("new Test name 1");
+        newUser.setPassword("new Test Password 1");
+        newUser.setLevel(Level.GOLD);
+        newUser.setLogin(100000);
+        newUser.setRecommend(9099);
+
+        this.userDaoJdbc.update(newUser);
+
+        User u1 = this.userDaoJdbc.get(user_1.getId());
+        User u2 = this.userDaoJdbc.get(user_2.getId());
+
+        checkSameUser(newUser, u1);
+        checkSameUser(user_2, u2);
     }
 }
