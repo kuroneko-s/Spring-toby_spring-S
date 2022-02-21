@@ -15,6 +15,8 @@ public class User {
     int login;
     int recommend;
 
+//    Date lastUpgraded;
+
     public int getLogin() {
         return login;
     }
@@ -42,4 +44,16 @@ public class User {
     public User clone(){
         return new User(this.id, this.name, this.password, this.level, this.login, this.recommend);
     }
+
+    public void upgradeLevel() {
+        final Level nextLevel = this.level.nextLevel();
+
+        if (nextLevel == null) {
+            throw new IllegalStateException(this.level + "은 업그레이드가 불가능합니다.");
+        }else {
+            this.level = nextLevel;
+//            this.lastUpgraded = new Date();
+        }
+    }
+
 }

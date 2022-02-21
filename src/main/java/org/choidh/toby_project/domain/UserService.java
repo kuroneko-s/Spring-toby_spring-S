@@ -10,31 +10,36 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public void upgradeLevel() {
+    public void upgradeLevels() {
         List<User> users = this.userDao.getAll();
 
         users.forEach(user -> {
-            boolean changed = false;
-            switch (user.getLevel()){
-                case BASIC:
-                    if ( user.getLogin() >= 50 ) {
-                        user.setLevel(Level.SILVER);
-                        changed = true;
-                    }
-                    break;
-                case SILVER:
-                    if ( user.getRecommend() >= 30 ) {
-                        user.setLevel(Level.GOLD);
-                        changed = true;
-                    }
-                    break;
-                case GOLD:
-                    changed = false;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Not found Value");
+            if (canUpgradeLevel(user)) {
+                this.upgradeLevel(user);
             }
-            if ( changed ) userDao.update(user);
         });
+    }
+
+    private void upgradeLevel(User user) {
+        user.upgradeLevel();
+        this.userDao.update(user);
+    }
+
+    private boolean canUpgradeLevel(User user) {
+        switch (user.getLevel()) {
+            case BASIC:
+                return user.getLogin() >= 50;
+            case SILVER:
+                return user.getRecommend() >= 30;
+            case GOLD:
+                return false;
+            default:
+                throw new IllegalArgumentException("Unknown Level: " + user.getLevel());
+        }
+    }
+
+    public void add(User user) {
+        if ( user.getLevel() == null ) user.setLevel(Level.BASIC);
+        this.userDao.add(user);
     }
 }

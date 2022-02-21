@@ -29,6 +29,8 @@ public class UserServiceTest extends TestConfig{
 
     @BeforeEach
     public void setUp() {
+        this.userDao.deleteAll();
+
         this.userSample = Arrays.asList(
                 new User("springex1", "CHOI1", "1234", Level.BASIC, 49, 0),
                 new User("springex2", "CHOI2", "1234", Level.BASIC, 50, 0),
@@ -38,14 +40,16 @@ public class UserServiceTest extends TestConfig{
         );
     }
 
+    private void checkLevel(User user, Level level) {
+        assertEquals(user.getLevel(), level);
+    }
+
     @Test
     @DisplayName("upgradeLevel() 검증")
     public void upgradeLevels() {
-        this.userDao.deleteAll();
-
         this.userSample.forEach(user -> this.userDao.add(user));
 
-        this.userService.upgradeLevel();
+        this.userService.upgradeLevels();
 
         List<User> newUsers = this.userDao.getAll();
 
@@ -56,8 +60,21 @@ public class UserServiceTest extends TestConfig{
         checkLevel(newUsers.get(4), Level.GOLD);
     }
 
-    private void checkLevel(User user, Level level) {
-        assertEquals(user.getLevel(), level);
+    @Test
+    @DisplayName("add() 검증")
+    public void add() {
+        User user1 = this.userSample.get(4);
+        User user2 = this.userSample.get(0);
+        user2.setLevel(null);
+
+        this.userService.add(user1);
+        this.userService.add(user2);
+
+        final User _user1 = userDao.get(user1.getId());
+        final User _user2 = userDao.get(user2.getId());
+
+        assertEquals(user1.getLevel(), _user1.getLevel());
+        assertEquals(_user2.getLevel(), Level.BASIC);
     }
 
 }
