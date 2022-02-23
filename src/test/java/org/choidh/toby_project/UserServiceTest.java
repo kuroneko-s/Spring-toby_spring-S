@@ -2,13 +2,13 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
-import org.choidh.toby_project.handler.TestUserServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class UserServiceTest extends TestConfig{
 
     @Test
     @DisplayName("upgradeLevel() 검증")
-    public void upgradeLevels() {
+    public void upgradeLevels() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
 
         this.userService.setUpgradePolicy(
@@ -92,7 +92,7 @@ public class UserServiceTest extends TestConfig{
 
     @Test
     @DisplayName("EventUserLevelUpgradePolicy 검증")
-    public void eventUserLevelUpgradePolicy() {
+    public void eventUserLevelUpgradePolicy() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
         this.userService.setUpgradePolicy(
                 context.getBean("eventUserLevelUpgradePolicy", EventUserLevelUpgradePolicy.class)
@@ -120,9 +120,9 @@ public class UserServiceTest extends TestConfig{
         try {
             userService.upgradeLevels();
             fail("TestUserServiceException expected");
-        }catch (TestUserServiceException e){ }
+        }catch (RuntimeException | SQLException e){ }
 
-        checkLevel(testUser, false);
+        checkLevel(userSample.get(1), false);
     }
 
 }
