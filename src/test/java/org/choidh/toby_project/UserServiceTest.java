@@ -120,7 +120,7 @@ public class UserServiceTest extends TestConfig{
         try {
             userService.upgradeLevels();
             fail("TestUserServiceException expected");
-        }catch (RuntimeException | SQLException e){ }
+        }catch (RuntimeException e){ }
 
         checkLevel(userSample.get(1), false);
     }
