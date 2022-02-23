@@ -1,11 +1,9 @@
 package org.choidh.toby_project.domain;
 
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 public class UserService {
@@ -14,14 +12,14 @@ public class UserService {
 
     private UserDao userDao;
     private UserLevelUpgradePolicy upgradePolicy;
-    private DataSource dataSource;
+    private PlatformTransactionManager transactionManager;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     public void setUpgradePolicy(UserLevelUpgradePolicy upgradePolicy) {
@@ -29,10 +27,15 @@ public class UserService {
     }
 
     public void upgradeLevels(){
+        /*
         // 여기에 datasource를 넣음으로써 달라지네
         PlatformTransactionManager transactionManager = new DataSourceTransactionManager(this.dataSource);
         // transaction 시작 ( 내부에서 transactionManager를 초기화하는 그런 단계가 있음 )
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
+         */
+        TransactionStatus status =
+                this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         List<User> users = this.userDao.getAll();
 
@@ -40,11 +43,10 @@ public class UserService {
             users.stream()
                     .filter(user -> this.upgradePolicy.canUpgradeLevel(user))
                     .forEach(user -> this.upgradePolicy.upgradeLevel(user));
-            transactionManager.commit(status);
+            this.transactionManager.commit(status);
         } catch (RuntimeException e) {
-            transactionManager.rollback(status);
+            this.transactionManager.rollback(status);
             throw e;
-        } finally {
         }
 
     }

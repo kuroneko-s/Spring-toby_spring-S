@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -33,6 +34,9 @@ public class UserServiceTest extends TestConfig{
 
     @Autowired
     TestUserLevelUpgradePolicy upgradePolicy;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
     @BeforeEach
     public void setUp() {
@@ -116,6 +120,7 @@ public class UserServiceTest extends TestConfig{
         final User testUser = userSample.get(3);
         upgradePolicy.setId(testUser.getId());
         this.userService.setUpgradePolicy(upgradePolicy);
+        this.userService.setTransactionManager(this.transactionManager);
 
         try {
             userService.upgradeLevels();
