@@ -6,13 +6,14 @@
 
     <context:component-scan base-package="org.choidh.toby_project"/>
 
-    <bean id="userDaoJdbc" class="org.choidh.toby_project.domain.UserDaoJdbc">
+    <bean id="userDao" class="org.choidh.toby_project.domain.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
     <bean id="userService" class="org.choidh.toby_project.domain.UserService">
-        <property name="userDao" ref="userDaoJdbc"/>
+        <property name="userDao" ref="userDao"/>
         <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
+        <property name="mailSender" ref="mailSender"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -20,12 +21,14 @@
     </bean>
 
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy">
-        <property name="userDao" ref="userDaoJdbc"/>
+        <property name="userDao" ref="userDao"/>
     </bean>
 
     <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.EventUserLevelUpgradePolicy">
-        <property name="userDao" ref="userDaoJdbc"/>
+        <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean id="mailSender" class="org.choidh.toby_project.domain.DummyMailSender"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>

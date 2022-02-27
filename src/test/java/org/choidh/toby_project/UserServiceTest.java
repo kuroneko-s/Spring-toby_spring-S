@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mail.MailSender;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
@@ -37,6 +38,9 @@ public class UserServiceTest extends TestConfig{
 
     @Autowired
     PlatformTransactionManager transactionManager;
+
+    @Autowired
+    MailSender mailSender;
 
     @BeforeEach
     public void setUp() {

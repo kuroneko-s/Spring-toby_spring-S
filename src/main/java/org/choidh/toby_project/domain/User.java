@@ -6,7 +6,6 @@ import lombok.*;
 @Builder
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class User {
     String id;
     String name;
@@ -14,8 +13,28 @@ public class User {
     Level level;
     int login;
     int recommend;
+    String email;
 
-//    Date lastUpgraded;
+    public User(String id, String name, String password, Level level, int login, int recommend, String email) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.level = level;
+        this.login = login;
+        this.recommend = recommend;
+        this.email = email;
+    }
+
+    public User(String id, String name, String password, Level level, int login, int recommend) {
+        this(id, name, password, level, login, recommend, "test@test.com");
+    }
+
+    //    Date lastUpgraded;
+
+
+    public String getEmail() {
+        return email;
+    }
 
     public int getLogin() {
         return login;

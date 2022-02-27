@@ -1,5 +1,7 @@
 package org.choidh.toby_project.domain;
 
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -13,6 +15,11 @@ public class UserService {
     private UserDao userDao;
     private UserLevelUpgradePolicy upgradePolicy;
     private PlatformTransactionManager transactionManager;
+    private MailSender mailSender;
+
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -42,13 +49,29 @@ public class UserService {
         try {
             users.stream()
                     .filter(user -> this.upgradePolicy.canUpgradeLevel(user))
-                    .forEach(user -> this.upgradePolicy.upgradeLevel(user));
+                    .forEach(user -> {
+                        this.upgradePolicy.upgradeLevel(user);
+                        this.sendUpgradeEmail(user);
+                    });
             this.transactionManager.commit(status);
         } catch (RuntimeException e) {
             this.transactionManager.rollback(status);
             throw e;
         }
 
+    }
+
+    private void sendUpgradeEmail(User user) {
+//        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+//        javaMailSender.setHost("mail.server.com"); // smtp Server Host
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setFrom("choidh.dev@gmail.com");
+        mailMessage.setSubject("Upgrade 안내");
+        mailMessage.setText("사용자의 등급이 " + user.getLevel().name());
+
+        this.mailSender.send(mailMessage);
     }
 
     public void add(User user) {

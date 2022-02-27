@@ -35,9 +35,9 @@ class AppTests extends TestConfig{
 
     @BeforeAll
     public static void beforeAll() {
-        user_1 = new User("springex1", "CHOI", "1234", Level.BASIC, 1, 0);
-        user_2 = new User("springex2", "DONGHYUK", "4321", Level.SILVER, 55, 10);
-        user_3 = new User("springex3", "CHOIDONGHYUK", "9876", Level.GOLD, 100, 40);
+        user_1 = new User("springex1", "CHOI", "1234", Level.BASIC, 1, 0, "test1@test.com");
+        user_2 = new User("springex2", "DONGHYUK", "4321", Level.SILVER, 55, 10, "test2@test.com");
+        user_3 = new User("springex3", "CHOIDONGHYUK", "9876", Level.GOLD, 100, 40, "test3@test.com");
     }
 
     @BeforeEach
@@ -90,6 +90,7 @@ class AppTests extends TestConfig{
         assertEquals(user.getLevel(), user_1.getLevel());
         assertEquals(user.getLogin(), user_1.getLogin());
         assertEquals(user.getRecommend(), user_1.getRecommend());
+        assertEquals(user.getEmail(), user_1.getEmail());
     }
 
     @Test

@@ -39,4 +39,5 @@ public class TestUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
         user.upgradeLevel();
         this.userDao.update(user);
     }
+
 }
