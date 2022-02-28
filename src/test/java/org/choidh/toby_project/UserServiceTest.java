@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
@@ -79,6 +80,33 @@ public class UserServiceTest extends TestConfig{
         checkLevel(userSample.get(2), false);
         checkLevel(userSample.get(3), true);
         checkLevel(userSample.get(4), false);
+    }
+
+    @Test
+    @DisplayName("upgradeLevel() + Mock Object 검증")
+    @DirtiesContext // context DI config에 변경이 있음을 알린다.
+    public void upgradeLevelsWithMockObject() throws SQLException {
+        this.userSample.forEach(user -> this.userDao.add(user));
+
+        MockMailSender mailSender = new MockMailSender();
+        this.userService.setMailSender(mailSender);
+
+        this.userService.setUpgradePolicy(
+                context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
+        );
+
+        this.userService.upgradeLevels();
+
+        checkLevel(userSample.get(0), false);
+        checkLevel(userSample.get(1), true);
+        checkLevel(userSample.get(2), false);
+        checkLevel(userSample.get(3), true);
+        checkLevel(userSample.get(4), false);
+
+        List<String> requests = mailSender.getRequests();
+        assertEquals(requests.size(), 2);
+        assertEquals(requests.get(0), userSample.get(1).getEmail());
+        assertEquals(requests.get(1), userSample.get(3).getEmail());
     }
 
     @Test

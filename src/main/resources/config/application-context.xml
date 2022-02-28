@@ -14,6 +14,7 @@
         <property name="userDao" ref="userDao"/>
         <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
         <property name="mailSender" ref="mailSender"/>
+        <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
