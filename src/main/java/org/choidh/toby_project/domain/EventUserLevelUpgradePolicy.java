@@ -4,12 +4,6 @@ import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SI
 import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
 
 public class EventUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
-    UserDao userDao;
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
     @Override
     public boolean canUpgradeLevel(User user) {
         switch (user.getLevel()) {
@@ -27,6 +21,5 @@ public class EventUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
     @Override
     public void upgradeLevel(User user) {
         user.upgradeLevel();
-        this.userDao.update(user);
     }
 }

@@ -9,11 +9,6 @@ import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_G
 @Component
 public class TestUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
     private String id;
-    private final UserDao userDao;
-
-    public TestUserLevelUpgradePolicy(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     public void setId(String id) {
         this.id = id;
@@ -37,7 +32,6 @@ public class TestUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
     public void upgradeLevel(User user) {
         if (user.getId().equals(this.id)) throw new TestUserServiceException("Test Error");
         user.upgradeLevel();
-        this.userDao.update(user);
     }
 
 }

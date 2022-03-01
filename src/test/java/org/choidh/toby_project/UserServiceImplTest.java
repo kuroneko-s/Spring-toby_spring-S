@@ -2,6 +2,8 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
+import org.choidh.toby_project.mock.MockMailSender;
+import org.choidh.toby_project.mock.MockUserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,35 +117,38 @@ public class UserServiceImplTest extends TestConfig{
 
     @Test
     @DisplayName("upgradeLevel() 고립된 테스트로 검증")
-    @DirtiesContext
     public void upgradeLevelsWith고립() throws SQLException {
-        // DB 테스트 데이터 준비
-        this.userSample.forEach(user -> this.userDao.add(user));
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
 
         // 메일 발송의 Mock Object 생성 단계
         MockMailSender mailSender = new MockMailSender();
-        this.userServiceImpl.setMailSender(mailSender);
+        userServiceImpl.setMailSender(mailSender);
+
+        // UserDao를 Mock Object로 교체
+        MockUserDao mockUserDao = new MockUserDao(this.userSample);
+        userServiceImpl.setUserDao(mockUserDao);
 
         // 테스트용 upgrade 조건 설정
-        this.userServiceImpl.setUpgradePolicy(
-                context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
-        );
+        userServiceImpl.setUpgradePolicy(new DefaultUserLevelUpgradePolicy());
 
         // 테스트 대상 실행
-        this.userService.upgradeLevels();
+        userServiceImpl.upgradeLevels();
 
-        // 테스트 결과 확인
-        checkLevel(userSample.get(0), false);
-        checkLevel(userSample.get(1), true);
-        checkLevel(userSample.get(2), false);
-        checkLevel(userSample.get(3), true);
-        checkLevel(userSample.get(4), false);
+        final List<User> updateResult = mockUserDao.getUpdated();
+        assertEquals(updateResult.size(), 2);
+        checkUserAndLevel(updateResult.get(0), "springex2", Level.SILVER);
+        checkUserAndLevel(updateResult.get(1), "springex4", Level.GOLD);
 
         // Mock Object를 이용하여 결과 확인
         List<String> requests = mailSender.getRequests();
         assertEquals(requests.size(), 2);
         assertEquals(requests.get(0), userSample.get(1).getEmail());
         assertEquals(requests.get(1), userSample.get(3).getEmail());
+    }
+
+    private void checkUserAndLevel(User user, String id, Level level) {
+        assertEquals(user.getId(), id);
+        assertEquals(user.getLevel(), level);
     }
 
     @Test
