@@ -10,11 +10,15 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="userService" class="org.choidh.toby_project.domain.UserService">
-        <property name="userDao" ref="userDao"/>
-        <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
-        <property name="mailSender" ref="mailSender"/>
+    <bean id="userService" class="org.choidh.toby_project.domain.UserServiceTx">
         <property name="transactionManager" ref="transactionManager"/>
+        <property name="userService" ref="userServiceImpl"/>
+    </bean>
+
+    <bean id="userServiceImpl" class="org.choidh.toby_project.domain.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="mailSender" ref="mailSender"/>
+        <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

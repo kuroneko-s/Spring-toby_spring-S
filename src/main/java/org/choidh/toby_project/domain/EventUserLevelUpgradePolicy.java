@@ -1,7 +1,7 @@
 package org.choidh.toby_project.domain;
 
-import static org.choidh.toby_project.domain.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static org.choidh.toby_project.domain.UserService.MIN_RECOOMEND_FOR_GOLD;
+import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
 
 public class EventUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
     UserDao userDao;
