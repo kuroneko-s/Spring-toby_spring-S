@@ -9,6 +9,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -100,4 +102,6 @@ public class NoneConfigTest {
         assertEquals(mailMessages.get(0).getTo()[0], userSample.get(1).getEmail());
         assertEquals(mailMessages.get(1).getTo()[0], userSample.get(3).getEmail());
     }
+
+
 }
