@@ -1,6 +1,6 @@
 package org.choidh.toby_project.reflect;
 
-public class HelloUppercase implements Hello{
+public class HelloUppercase implements Hello {
     Hello hello; // target Class
 
     public HelloUppercase(Hello hello) {

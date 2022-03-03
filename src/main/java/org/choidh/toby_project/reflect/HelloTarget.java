@@ -1,6 +1,6 @@
 package org.choidh.toby_project.reflect;
 
-public class HelloTarget implements Hello{
+public class HelloTarget implements Hello {
     @Override
     public String sayHello(String name) {
         return "Hello " + name;

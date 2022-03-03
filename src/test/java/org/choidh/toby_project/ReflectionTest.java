@@ -3,10 +3,12 @@ package org.choidh.toby_project;
 import org.choidh.toby_project.reflect.Hello;
 import org.choidh.toby_project.reflect.HelloTarget;
 import org.choidh.toby_project.reflect.HelloUppercase;
+import org.choidh.toby_project.reflect.UppercaseHandler;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +47,21 @@ public class ReflectionTest {
     @Test
     public void uppercaseHello() {
         Hello proxyHello = new HelloUppercase(new HelloTarget());
+
+        assertEquals(proxyHello.sayHello("Toby"), "HELLO TOBY");
+        assertEquals(proxyHello.sayHi("Toby"), "HI TOBY");
+        assertEquals(proxyHello.sayThankYou("Toby"), "THANK YOU TOBY");
+    }
+
+    @Test
+    public void uppercaseHelloWithProxy() {
+        System.out.println(getClass().getClassLoader());
+
+        Hello proxyHello = (Hello) Proxy.newProxyInstance(
+                getClass().getClassLoader(), // 다이내믹 프록시 클래스의 로딩에 사용할 로더
+                new Class[]{Hello.class}, // 구현할 인터페이스
+                new UppercaseHandler(new HelloTarget()) // 부가기능이 담긴 InvocationHandler 구현체
+        );
 
         assertEquals(proxyHello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(proxyHello.sayHi("Toby"), "HI TOBY");
