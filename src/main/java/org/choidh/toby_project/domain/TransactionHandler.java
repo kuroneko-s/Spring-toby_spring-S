@@ -30,9 +30,11 @@ public class TransactionHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getName().startsWith(pattern)) {
             return invokeInTransaction(method, args);
+        }else if (method.getName().startsWith("add")){
+            System.out.println("run add");
         }
 
-        return method.invoke(target, target);
+        return method.invoke(target, args);
     }
 
     private Object invokeInTransaction(Method method, Object[] args) throws Throwable {

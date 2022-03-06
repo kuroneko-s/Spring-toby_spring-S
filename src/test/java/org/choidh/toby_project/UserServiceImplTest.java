@@ -2,6 +2,7 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
+import org.choidh.toby_project.factory.TxProxyFactoryBean;
 import org.choidh.toby_project.mock.MockMailSender;
 import org.choidh.toby_project.mock.MockUserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -252,6 +253,33 @@ public class UserServiceImplTest extends TestConfig{
         testUpgradePolicy.setId(testUser.getId());
         this.userServiceImpl.setUpgradePolicy(testUpgradePolicy);
 //        userService.setTransactionManager(this.transactionManager);
+
+        try {
+            userService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        }catch (RuntimeException e){ }
+
+        checkLevel(userSample.get(1), false);
+    }
+
+    @Test
+    @DisplayName("upgradeAllOrNothing 검증 With Dynamic Proxy")
+    @DirtiesContext
+    public void upgradeAllOrNothingDynamic() throws Exception {
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+        MockMailSender mailSender = new MockMailSender();
+
+        userServiceImpl.setMailSender(mailSender);
+        userServiceImpl.setUserDao(this.userDao);
+
+        testUpgradePolicy.setId(userSample.get(3).getId());
+        userServiceImpl.setUpgradePolicy(testUpgradePolicy);
+
+        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(userServiceImpl);
+
+        final UserService userService = (UserService) txProxyFactoryBean.getObject();
+        this.userSample.forEach(user -> userService.add(user));
 
         try {
             userService.upgradeLevels();

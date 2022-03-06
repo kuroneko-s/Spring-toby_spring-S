@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,6 +68,17 @@ public class ReflectionTest {
         assertEquals(proxyHello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(proxyHello.sayHi("Toby"), "HI TOBY");
         assertEquals(proxyHello.sayThankYou("Toby"), "THANK YOU TOBY");
+    }
+
+    @Test
+    public void createInstanceTest() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+//        final Date date = (Date) Class.forName("java.util.Date").newInstance();
+//        System.out.println(date.getTime());
+
+        final Date date = (Date) Class.forName("java.util.Date").getDeclaredConstructor().newInstance();
+        final DateFormat dateInstance = DateFormat.getDateInstance(DateFormat.FULL);
+        System.out.println(dateInstance.format(date));
+
     }
 
 }

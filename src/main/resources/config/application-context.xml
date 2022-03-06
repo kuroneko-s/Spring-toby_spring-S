@@ -10,9 +10,11 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="userService" class="org.choidh.toby_project.domain.UserServiceTx">
-        <property name="transactionManager" ref="transactionManager"/>
-        <property name="userService" ref="userServiceImpl"/>
+    <bean id="userService" class="org.choidh.toby_project.factory.TxProxyFactoryBean">
+        <property name="transactionManager"  ref="transactionManager"/>
+        <property name="serviceInterface" value="org.choidh.toby_project.domain.UserService"/>
+        <property name="target" ref="userServiceImpl"/>
+        <property name="pattern" value="upgradeLevels"/>
     </bean>
 
     <bean id="userServiceImpl" class="org.choidh.toby_project.domain.UserServiceImpl">
@@ -37,6 +39,8 @@
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
+
+    <bean id="message" class="org.choidh.toby_project.factoryT.MessageFactoryBean"/>
 
     <!--
     <bean id="defaultConnectionMaker" class="org.choidh.toby_project.connection.SimpleConnectionMaker"/>
