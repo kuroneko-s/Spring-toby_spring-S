@@ -2,12 +2,12 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
-import org.choidh.toby_project.factory.TxProxyFactoryBean;
 import org.choidh.toby_project.mock.MockMailSender;
 import org.choidh.toby_project.mock.MockUserDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
@@ -275,10 +275,10 @@ public class UserServiceImplTest extends TestConfig{
         testUpgradePolicy.setId(userSample.get(3).getId());
         userServiceImpl.setUpgradePolicy(testUpgradePolicy);
 
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(userServiceImpl);
+        ProxyFactoryBean factoryBean = context.getBean("&userService", ProxyFactoryBean.class);
+        factoryBean.setTarget(userServiceImpl);
 
-        final UserService userService = (UserService) txProxyFactoryBean.getObject();
+        final UserService userService = (UserService) factoryBean.getObject();
         this.userSample.forEach(user -> userService.add(user));
 
         try {

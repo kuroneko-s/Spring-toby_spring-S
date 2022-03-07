@@ -10,11 +10,13 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="userService" class="org.choidh.toby_project.factory.TxProxyFactoryBean">
-        <property name="transactionManager"  ref="transactionManager"/>
-        <property name="serviceInterface" value="org.choidh.toby_project.domain.UserService"/>
+    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="target" ref="userServiceImpl"/>
-        <property name="pattern" value="upgradeLevels"/>
+        <property name="interceptorNames"> <!-- Advice and Advisor 동시 설정가능한 프로퍼티 -->
+            <list>
+                <value>transactionAdvisor</value>
+            </list>
+        </property>
     </bean>
 
     <bean id="userServiceImpl" class="org.choidh.toby_project.domain.UserServiceImpl">
@@ -27,11 +29,23 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <!--  ProxyFactoryBean  -->
+    <bean id="transactionAdvice" class="org.choidh.toby_project.aop.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+        <property name="mappedName" value="upgrade*"/>
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice"/>
+        <property name="pointcut" ref="transactionPointcut"/>
+    </bean>
+    <!---->
+
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy"/>
-
     <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.EventUserLevelUpgradePolicy"/>
-
-    <bean id="mailSender" class="org.choidh.toby_project.domain.DummyMailSender"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
@@ -40,6 +54,7 @@
         <property name="password" value=""/>
     </bean>
 
+    <bean id="mailSender" class="org.choidh.toby_project.domain.DummyMailSender"/>
     <bean id="message" class="org.choidh.toby_project.factoryT.MessageFactoryBean"/>
 
     <!--
