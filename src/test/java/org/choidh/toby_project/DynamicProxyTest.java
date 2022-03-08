@@ -6,6 +6,7 @@ import org.choidh.toby_project.reflect.Hello;
 import org.choidh.toby_project.reflect.HelloTarget;
 import org.choidh.toby_project.reflect.UppercaseHandler;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
@@ -38,6 +39,44 @@ public class DynamicProxyTest {
         assertEquals(proxyHello.sayHello("Toby"), "HELLO TOBY");
         assertEquals(proxyHello.sayHi("Toby"), "HI TOBY");
         assertEquals(proxyHello.sayThankYou("Toby"), "Thank You Toby");
+    }
+
+    @Test
+    public void classNamePointcut() {
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut() {
+            @Override
+            public ClassFilter getClassFilter() {
+                return clazz -> clazz.getSimpleName().startsWith("HelloT");
+            }
+        };
+
+        pointcut.setMappedName("sayH*");
+
+        checkAdviced(new HelloTarget(), pointcut, true);
+
+        class HelloWorld extends HelloTarget {};
+        checkAdviced(new HelloWorld(), pointcut, false);
+
+        class HelloToby extends HelloTarget {};
+        checkAdviced(new HelloToby(), pointcut, true);
+
+    }
+
+    private void checkAdviced(HelloTarget target, NameMatchMethodPointcut pointcut, boolean adviced) {
+        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+        factoryBean.setTarget(target);
+        factoryBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+        Hello proxyHello = (Hello) factoryBean.getObject();
+
+        if (adviced) {
+            assertEquals(proxyHello.sayHello("Toby"), "HELLO TOBY");
+            assertEquals(proxyHello.sayHi("Toby"), "HI TOBY");
+            assertEquals(proxyHello.sayThankYou("Toby"), "Thank You Toby");
+        }else {
+            assertEquals(proxyHello.sayHello("Toby"), "Hello Toby");
+            assertEquals(proxyHello.sayHi("Toby"), "Hi Toby");
+            assertEquals(proxyHello.sayThankYou("Toby"), "Thank You Toby");
+        }
     }
 
     static class UppercaseAdvice implements MethodInterceptor {

@@ -10,16 +10,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="userServiceImpl"/>
-        <property name="interceptorNames"> <!-- Advice and Advisor 동시 설정가능한 프로퍼티 -->
-            <list>
-                <value>transactionAdvisor</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="userServiceImpl" class="org.choidh.toby_project.domain.UserServiceImpl">
+    <bean id="userService" class="org.choidh.toby_project.domain.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
         <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
@@ -34,14 +25,17 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+    <bean id="transactionPointcut" class="org.choidh.toby_project.aop.NameMatchClassMethodPointcut">
         <property name="mappedName" value="upgrade*"/>
+        <property name="mappedClassName" value="*ServiceImpl"/>
     </bean>
 
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
         <property name="advice" ref="transactionAdvice"/>
         <property name="pointcut" ref="transactionPointcut"/>
     </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
     <!---->
 
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy"/>
