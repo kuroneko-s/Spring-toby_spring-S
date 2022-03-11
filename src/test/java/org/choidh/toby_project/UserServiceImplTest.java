@@ -2,6 +2,7 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
+import org.choidh.toby_project.handler.TestUserServiceException;
 import org.choidh.toby_project.mock.MockMailSender;
 import org.choidh.toby_project.mock.MockUserDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,10 +31,10 @@ public class UserServiceImplTest extends TestConfig{
     List<User> userSample;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -49,6 +50,15 @@ public class UserServiceImplTest extends TestConfig{
 
     @Autowired
     MailSender mailSender;
+
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "springex4";
+
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
 
     @BeforeEach
     public void setUp() {
@@ -76,7 +86,7 @@ public class UserServiceImplTest extends TestConfig{
     public void upgradeLevels() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
 
-        this.userServiceImpl.setUpgradePolicy(
+        this.userService.setUpgradePolicy(
                 context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
         );
 
@@ -96,9 +106,9 @@ public class UserServiceImplTest extends TestConfig{
         this.userSample.forEach(user -> this.userDao.add(user));
 
         MockMailSender mailSender = new MockMailSender();
-        this.userServiceImpl.setMailSender(mailSender);
+        this.userService.setMailSender(mailSender);
 
-        this.userServiceImpl.setUpgradePolicy(
+        this.userService.setUpgradePolicy(
                 context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
         );
 
@@ -173,7 +183,7 @@ public class UserServiceImplTest extends TestConfig{
     @DisplayName("EventUserLevelUpgradePolicy 검증")
     public void eventUserLevelUpgradePolicy() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
-        this.userServiceImpl.setUpgradePolicy(
+        this.userService.setUpgradePolicy(
                 context.getBean("eventUserLevelUpgradePolicy", EventUserLevelUpgradePolicy.class)
         ); // 전략 패턴
         // DI 기본으로는 Default class 주입중
@@ -249,13 +259,13 @@ public class UserServiceImplTest extends TestConfig{
     public void upgradeAllOrNothing() {
         this.userSample.forEach(user -> userDao.add(user));
 
-        final User testUser = userSample.get(3);
-        testUpgradePolicy.setId(testUser.getId());
-        this.userServiceImpl.setUpgradePolicy(testUpgradePolicy);
+//        final User testUser = userSample.get(3);
+//        testUpgradePolicy.setId(testUser.getId());
+//        this.userService.setUpgradePolicy(testUpgradePolicy);
 //        userService.setTransactionManager(this.transactionManager);
 
         try {
-            userService.upgradeLevels();
+            testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }catch (RuntimeException e){ }
 

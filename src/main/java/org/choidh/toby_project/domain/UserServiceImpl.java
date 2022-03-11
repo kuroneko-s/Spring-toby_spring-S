@@ -30,10 +30,15 @@ public class UserServiceImpl implements UserService{
         users.stream()
                 .filter(user -> this.upgradePolicy.canUpgradeLevel(user))
                 .forEach(user -> {
-                    this.upgradePolicy.upgradeLevel(user);
+//                    this.upgradePolicy.upgradeLevel(user);
+                    this.upgradeLevel(user);
                     this.userDao.update(user);
                     this.sendUpgradeEmail(user);
                 });
+    }
+
+    protected void upgradeLevel(User user) {
+        user.upgradeLevel();
     }
 
     private void sendUpgradeEmail(User user) {
