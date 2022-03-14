@@ -17,7 +17,7 @@
     </bean>
 
     <bean id="testUserService"
-          class="org.choidh.toby_project.UserServiceImplTest$TestUserServiceImpl"
+          class="org.choidh.toby_project.UserServiceImplTest$TestUserService"
           parent="userService"/>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -29,9 +29,9 @@
         <property name="transactionManager" ref="transactionManager"/>
     </bean>
 
-    <bean id="transactionPointcut" class="org.choidh.toby_project.aop.NameMatchClassMethodPointcut">
-        <property name="mappedClassName" value="*ServiceImpl"/>
-        <property name="mappedName" value="upgrade*"/>
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression"
+                  value="execution(* *..*ServiceImpl.upgrade*(..))"/>
     </bean>
 
     <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
@@ -39,7 +39,9 @@
         <property name="pointcut" ref="transactionPointcut"/>
     </bean>
 
-    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
     <!---->
 
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy"/>

@@ -51,7 +51,7 @@ public class UserServiceImplTest extends TestConfig{
     @Autowired
     MailSender mailSender;
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl{
         private String id = "springex4";
 
         protected void upgradeLevel(User user) {
@@ -268,6 +268,8 @@ public class UserServiceImplTest extends TestConfig{
             testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }catch (RuntimeException e){ }
+
+        log.info(testUserService.getClass().getName());
 
         checkLevel(userSample.get(1), false);
     }
