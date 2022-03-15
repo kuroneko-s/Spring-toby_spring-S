@@ -4,6 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class TransactionAdvice implements MethodInterceptor {
@@ -18,6 +19,8 @@ public class TransactionAdvice implements MethodInterceptor {
 
         final TransactionStatus status =
                 this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        new TransactionInterceptor();
 
         try {
             Object result = invocation.proceed();
