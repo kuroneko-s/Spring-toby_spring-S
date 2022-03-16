@@ -9,7 +9,7 @@ public class UserServiceImpl implements UserService{
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOOMEND_FOR_GOLD = 30;
 
-    private UserDao userDao;
+    protected UserDao userDao;
     private UserLevelUpgradePolicy upgradePolicy;
     private MailSender mailSender;
 

@@ -11,10 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -22,8 +25,7 @@ import java.util.List;
 
 import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
 import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class UserServiceImplTest extends TestConfig{
@@ -34,7 +36,7 @@ public class UserServiceImplTest extends TestConfig{
     UserServiceImpl userService;
 
     @Autowired
-    UserService testUserService;
+    TestUserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -57,6 +59,14 @@ public class UserServiceImplTest extends TestConfig{
         protected void upgradeLevel(User user) {
             if (user.getId().equals(this.id)) throw new TestUserServiceException();
             super.upgradeLevel(user);
+        }
+
+        @Override
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+            return null;
         }
     }
 
@@ -319,5 +329,38 @@ public class UserServiceImplTest extends TestConfig{
         }catch (RuntimeException e){ }
 
         checkLevel(userSample.get(1), false);
+    }
+
+    @Test
+    @DisplayName("Transaction read only test")
+    public void readOnlyTransactionAttribute() {
+        this.userSample.forEach(user -> this.userDao.add(user));
+
+        assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
+
+    }
+
+    @Autowired TxAnnotationUser txAnnotation;
+
+    @Test
+    @DisplayName("Transaction read only test 2")
+    public void readOnlyTransactionAttribute_2() {
+        this.userSample.forEach(user -> this.userDao.add(user));
+
+        assertThrows(TransientDataAccessResourceException.class, () -> txAnnotation.getAll());
+
+    }
+
+    @Service("txAnnotation")
+    class TxAnnotationUser extends UserServiceImpl {
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<User> getAll() {
+            for (User user : super.getAll()) {
+                super.update(user);
+            }
+            return null;
+        }
     }
 }
