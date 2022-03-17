@@ -13,11 +13,25 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+    <tx:annotation-driven proxy-target-class="true"/>
     <context:component-scan base-package="org.choidh.toby_project"/>
 
     <bean id="userDao" class="org.choidh.toby_project.domain.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
-        <property name="sqlAdd" value="insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
+        <property name="sqlService" ref="sqlService"/>
+    </bean>
+
+    <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.SimpleSqlService">
+        <property name="sqlMap">
+            <map>
+                <entry key="add" value="insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
+                <entry key="get" value="select * from user where id = ?"/>
+                <entry key="getCount" value="select count(*) from user"/>
+                <entry key="update" value="update user set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?"/>
+                <entry key="getAll" value="select * from user order by id"/>
+                <entry key="deleteAll" value="delete from user"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
@@ -67,28 +81,34 @@
         </property>
     </bean>
     -->
+    <!--
     <tx:advice id="transactionAdvice">
         <tx:attributes>
-            <tx:method name="get*" read-only="true" timeout="30"/>
+            <tx:method name="get*" read-only="true"/>
             <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE"/>
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
-
-    <aop:config>
-<!--        <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>-->
-        <aop:pointcut id="transactionPointcut" expression="bean(*Service)"/>
-    </aop:config>
+    -->
+    <!--    <aop:config proxy-target-class="true">-->
+    <!--
+        <aop:pointcut id="transactionPointcut" expression="execution(* *..*ServiceImpl.upgrade*(..))"/>
+    -->
+    <!--        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>-->
+    <!--    </aop:config>-->
     <!---->
 
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.policy.DefaultUserLevelUpgradePolicy"/>
     <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.policy.EventUserLevelUpgradePolicy"/>
+    <bean id="txAnnotationUser"
+          class="org.choidh.toby_project.UserServiceImplTest$TxAnnotationUser"
+          parent="userService"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:~/toby"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/toby"/>
+        <property name="username" value="root"/>
+        <property name="password" value="963."/>
     </bean>
 
     <bean id="mailSender" class="org.choidh.toby_project.mail.DummyMailSender"/>
