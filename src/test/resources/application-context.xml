@@ -84,6 +84,9 @@
 
     <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy"/>
     <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.EventUserLevelUpgradePolicy"/>
+    <bean id="txAnnotationUser"
+          class="org.choidh.toby_project.UserServiceImplTest$TxAnnotationUser"
+          parent="userService"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>

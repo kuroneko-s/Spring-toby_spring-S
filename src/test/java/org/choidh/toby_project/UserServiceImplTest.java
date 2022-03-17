@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -351,8 +350,7 @@ public class UserServiceImplTest extends TestConfig{
 
     }
 
-    @Service("txAnnotation")
-    class TxAnnotationUser extends UserServiceImpl {
+    static class TxAnnotationUser extends UserServiceImpl {
 
         @Override
         @Transactional(readOnly = true)
