@@ -21,7 +21,7 @@
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="org.choidh.toby_project.sql.SimpleSqlService">
+    <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.SimpleSqlService">
         <property name="sqlMap">
             <map>
                 <entry key="add" value="insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
@@ -112,7 +112,7 @@
     </bean>
 
     <bean id="mailSender" class="org.choidh.toby_project.mail.DummyMailSender"/>
-    <bean id="message" class="org.choidh.toby_project.factoryT.MessageFactoryBean"/>
+    <bean id="message" class="org.choidh.toby_project.message.MessageFactoryBean"/>
 
     <!--
     <bean id="defaultConnectionMaker" class="org.choidh.toby_project.connection.SimpleConnectionMaker"/>

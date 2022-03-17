@@ -92,7 +92,7 @@
     </bean>
 
     <bean id="mailSender" class="org.choidh.toby_project.mail.DummyMailSender"/>
-    <bean id="message" class="org.choidh.toby_project.factoryT.MessageFactoryBean"/>
+    <bean id="message" class="org.choidh.toby_project.message.MessageFactoryBean"/>
 
     <!--
     <bean id="defaultConnectionMaker" class="org.choidh.toby_project.connection.SimpleConnectionMaker"/>

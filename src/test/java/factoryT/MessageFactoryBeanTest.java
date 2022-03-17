@@ -1,7 +1,7 @@
 package factoryT;
 
-import org.choidh.toby_project.factoryT.Message;
-import org.choidh.toby_project.factoryT.MessageFactoryBean;
+import org.choidh.toby_project.message.Message;
+import org.choidh.toby_project.message.MessageFactoryBean;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

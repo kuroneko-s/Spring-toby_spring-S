@@ -1,4 +1,4 @@
-package org.choidh.toby_project.factoryT;
+package org.choidh.toby_project.message;
 
 import org.springframework.beans.factory.FactoryBean;
 

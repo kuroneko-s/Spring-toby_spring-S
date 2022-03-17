@@ -1,4 +1,4 @@
-package org.choidh.toby_project.factoryT;
+package org.choidh.toby_project.message;
 
 public class Message {
     private String message;

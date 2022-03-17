@@ -2,7 +2,7 @@ package org.choidh.toby_project.domain.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.Level;
-import org.choidh.toby_project.sql.SqlService;
+import org.choidh.toby_project.domain.dao.sql.SqlService;
 import org.choidh.toby_project.domain.user.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;

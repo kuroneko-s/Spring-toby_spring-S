@@ -1,4 +1,4 @@
-package org.choidh.toby_project.sql;
+package org.choidh.toby_project.domain.dao.sql;
 
 import org.choidh.toby_project.exception.SqlRetrievalFailureException;
 

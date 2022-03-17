@@ -1,4 +1,4 @@
-package org.choidh.toby_project.statement;
+package org.choidh.toby_project.domain.dao.statement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

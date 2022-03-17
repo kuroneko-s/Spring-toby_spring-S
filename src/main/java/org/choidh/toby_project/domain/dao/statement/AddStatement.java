@@ -1,4 +1,4 @@
-package org.choidh.toby_project.statement;
+package org.choidh.toby_project.domain.dao.statement;
 
 import org.choidh.toby_project.domain.user.User;
 
