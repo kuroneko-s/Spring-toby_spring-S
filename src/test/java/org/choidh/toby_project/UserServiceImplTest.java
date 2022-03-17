@@ -15,8 +15,12 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -346,14 +350,42 @@ public class UserServiceImplTest extends TestConfig{
     public void readOnlyTransactionAttribute_2() {
         this.userSample.forEach(user -> this.userDao.add(user));
 
-        assertThrows(TransientDataAccessResourceException.class, () -> txAnnotation.getAll());
+        txAnnotation.getAll();
+    }
 
+    @Test
+    @DisplayName("트랜잭션 컨트롤 예제")
+    public void exampleTransactionManager() {
+        userDao.deleteAll();
+        assertEquals(userDao.getCount(), 0);
+
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        // getTransaction == start
+        TransactionStatus status = this.transactionManager.getTransaction(definition);
+
+        userService.add(userSample.get(0));
+        userService.add(userSample.get(1));
+        assertEquals(userDao.getCount(), 2);
+
+        this.transactionManager.rollback(status);
+
+        assertEquals(userDao.getCount(), 0);
+    }
+
+    @Test
+    @DisplayName("트랜잭션 컨트롤 예제 (same)")
+    @Transactional(propagation = Propagation.NEVER)
+    @Rollback(value = false)
+    public void exampleTransactionManagerWithAnnotation() {
+        userDao.deleteAll();
+        userService.add(userSample.get(0));
+        userService.add(userSample.get(1));
     }
 
     static class TxAnnotationUser extends UserServiceImpl {
 
         @Override
-        @Transactional(readOnly = true)
+        @Transactional
         public List<User> getAll() {
             for (User user : super.getAll()) {
                 super.update(user);
