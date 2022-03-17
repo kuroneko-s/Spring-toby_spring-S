@@ -15,12 +15,12 @@
 
     <context:component-scan base-package="org.choidh.toby_project"/>
 
-    <bean id="userDao" class="org.choidh.toby_project.domain.UserDaoJdbc">
+    <bean id="userDao" class="org.choidh.toby_project.domain.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlAdd" value="insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
     </bean>
 
-    <bean id="userService" class="org.choidh.toby_project.domain.UserServiceImpl">
+    <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
         <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
@@ -81,8 +81,8 @@
     </aop:config>
     <!---->
 
-    <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.DefaultUserLevelUpgradePolicy"/>
-    <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.domain.EventUserLevelUpgradePolicy"/>
+    <bean id="defaultUserLevelUpgradePolicy" class="org.choidh.toby_project.policy.DefaultUserLevelUpgradePolicy"/>
+    <bean id="eventUserLevelUpgradePolicy" class="org.choidh.toby_project.policy.EventUserLevelUpgradePolicy"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
@@ -91,7 +91,7 @@
         <property name="password" value=""/>
     </bean>
 
-    <bean id="mailSender" class="org.choidh.toby_project.domain.DummyMailSender"/>
+    <bean id="mailSender" class="org.choidh.toby_project.mail.DummyMailSender"/>
     <bean id="message" class="org.choidh.toby_project.factoryT.MessageFactoryBean"/>
 
     <!--

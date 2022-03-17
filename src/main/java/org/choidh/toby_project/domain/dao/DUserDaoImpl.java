@@ -1,4 +1,4 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.domain.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

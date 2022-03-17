@@ -1,13 +1,14 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.policy;
 
-import org.choidh.toby_project.handler.TestUserServiceException;
+import org.choidh.toby_project.domain.user.User;
+import org.choidh.toby_project.exception.TestUserServiceException;
 import org.springframework.stereotype.Component;
 
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
 
 @Component
-public class TestUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
+public class TestUserLevelUpgradePolicy implements UserLevelUpgradePolicy {
     private String id;
 
     public void setId(String id) {

@@ -1,9 +1,11 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.policy;
 
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
+import org.choidh.toby_project.domain.user.User;
 
-public class EventUserLevelUpgradePolicy implements UserLevelUpgradePolicy{
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
+
+public class EventUserLevelUpgradePolicy implements UserLevelUpgradePolicy {
     @Override
     public boolean canUpgradeLevel(User user) {
         switch (user.getLevel()) {

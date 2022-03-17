@@ -1,5 +1,8 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.domain.user;
 
+import org.choidh.toby_project.domain.Level;
+import org.choidh.toby_project.domain.dao.UserDao;
+import org.choidh.toby_project.policy.UserLevelUpgradePolicy;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 

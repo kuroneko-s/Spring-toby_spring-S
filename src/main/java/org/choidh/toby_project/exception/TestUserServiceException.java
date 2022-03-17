@@ -1,4 +1,4 @@
-package org.choidh.toby_project.handler;
+package org.choidh.toby_project.exception;
 
 public class TestUserServiceException extends RuntimeException {
     public TestUserServiceException() {

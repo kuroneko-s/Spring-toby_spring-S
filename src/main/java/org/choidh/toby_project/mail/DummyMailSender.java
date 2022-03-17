@@ -1,4 +1,4 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.mail;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;

@@ -1,4 +1,6 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.domain.dao;
+
+import org.choidh.toby_project.domain.user.User;
 
 import java.util.List;
 

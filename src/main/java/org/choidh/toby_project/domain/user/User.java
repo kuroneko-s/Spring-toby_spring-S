@@ -1,6 +1,7 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.domain.user;
 
 import lombok.*;
+import org.choidh.toby_project.domain.Level;
 
 @Setter
 @Builder

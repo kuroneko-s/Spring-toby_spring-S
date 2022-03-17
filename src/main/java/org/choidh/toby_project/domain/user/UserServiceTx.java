@@ -1,4 +1,4 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.domain.user;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;

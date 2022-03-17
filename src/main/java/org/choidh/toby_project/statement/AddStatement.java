@@ -1,6 +1,6 @@
 package org.choidh.toby_project.statement;
 
-import org.choidh.toby_project.domain.User;
+import org.choidh.toby_project.domain.user.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

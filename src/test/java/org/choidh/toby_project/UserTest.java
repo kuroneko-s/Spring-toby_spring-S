@@ -1,7 +1,7 @@
 package org.choidh.toby_project;
 
 import org.choidh.toby_project.domain.Level;
-import org.choidh.toby_project.domain.User;
+import org.choidh.toby_project.domain.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

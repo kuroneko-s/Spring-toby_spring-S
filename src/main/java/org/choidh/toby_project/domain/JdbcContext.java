@@ -1,6 +1,7 @@
 package org.choidh.toby_project.domain;
 
 import lombok.extern.slf4j.Slf4j;
+import org.choidh.toby_project.domain.user.User;
 import org.choidh.toby_project.statement.AddStatement;
 import org.choidh.toby_project.statement.CountStatement;
 import org.choidh.toby_project.statement.DeleteStatement;

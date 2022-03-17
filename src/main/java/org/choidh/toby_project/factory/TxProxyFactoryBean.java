@@ -1,6 +1,6 @@
 package org.choidh.toby_project.factory;
 
-import org.choidh.toby_project.domain.TransactionHandler;
+import org.choidh.toby_project.handler.TransactionHandler;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 

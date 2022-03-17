@@ -1,6 +1,6 @@
-package org.choidh.toby_project.domain;
+package org.choidh.toby_project.sql;
 
-import org.choidh.toby_project.handler.SqlRetrievalFailureException;
+import org.choidh.toby_project.exception.SqlRetrievalFailureException;
 
 import java.util.Map;
 

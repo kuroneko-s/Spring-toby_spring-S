@@ -1,7 +1,7 @@
 package org.choidh.toby_project.mock;
 
-import org.choidh.toby_project.domain.User;
-import org.choidh.toby_project.domain.UserDao;
+import org.choidh.toby_project.domain.user.User;
+import org.choidh.toby_project.domain.dao.UserDao;
 
 import java.util.ArrayList;
 import java.util.List;

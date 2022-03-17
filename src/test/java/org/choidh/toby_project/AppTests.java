@@ -2,8 +2,8 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.Level;
-import org.choidh.toby_project.domain.User;
-import org.choidh.toby_project.domain.UserDao;
+import org.choidh.toby_project.domain.user.User;
+import org.choidh.toby_project.domain.dao.UserDao;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

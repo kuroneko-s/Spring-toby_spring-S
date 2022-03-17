@@ -2,9 +2,18 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.*;
-import org.choidh.toby_project.handler.TestUserServiceException;
+import org.choidh.toby_project.domain.dao.UserDao;
+import org.choidh.toby_project.domain.user.User;
+import org.choidh.toby_project.domain.user.UserService;
+import org.choidh.toby_project.domain.user.UserServiceImpl;
+import org.choidh.toby_project.domain.user.UserServiceTx;
+import org.choidh.toby_project.exception.TestUserServiceException;
 import org.choidh.toby_project.mock.MockMailSender;
 import org.choidh.toby_project.mock.MockUserDao;
+import org.choidh.toby_project.policy.DefaultUserLevelUpgradePolicy;
+import org.choidh.toby_project.policy.EventUserLevelUpgradePolicy;
+import org.choidh.toby_project.policy.TestUserLevelUpgradePolicy;
+import org.choidh.toby_project.policy.UserLevelUpgradePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +35,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static org.choidh.toby_project.domain.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_RECOOMEND_FOR_GOLD;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
