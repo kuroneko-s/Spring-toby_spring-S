@@ -11,6 +11,7 @@ import java.util.List;
 
 @Slf4j
 public class UserDaoJdbc implements UserDao{
+    private SqlService sqlService;
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<User> userRowMapper = (rs, rowNum) -> new User(rs.getString("id")
             , rs.getString("name"), rs.getString("password")
@@ -21,7 +22,11 @@ public class UserDaoJdbc implements UserDao{
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-/*
+    public void setSqlService(SqlService sqlService) {
+        this.sqlService = sqlService;
+    }
+
+    /*
     // 전략 패턴으로 인해 클래스가 많아지는 현상을 줄이는 방법중 하나는 내부 클래스를 선언하는 것
     public void addWithInnerClass(final User user) {
         class AddStatement implements Statement{
@@ -50,39 +55,36 @@ public class UserDaoJdbc implements UserDao{
     @Override
     public void add(User user) throws DuplicateKeyException {
         this.jdbcTemplate
-                .update("insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"
+                .update( this.sqlService.getSql("add")
                         , user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
     @Override
     public User get(String id) throws DataAccessException {
-        return this.jdbcTemplate.queryForObject("select * from user where id = ?"
-                , this.userRowMapper
-                , id);
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("get"), this.userRowMapper, id);
     }
 
     @Override
     public int getCount() {
-        return this.jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlService.getSql("getCount"), Integer.class);
     }
 
     @Override
     public void update(User user) {
         this.jdbcTemplate.update(
-                "update user set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ?",
+                this.sqlService.getSql("update"),
                 user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(),user.getEmail(), user.getId()
         );
     }
 
     @Override
     public List<User> getAll() {
-        return this.jdbcTemplate.query("select * from user order by id"
-                , this.userRowMapper);
+        return this.jdbcTemplate.query(this.sqlService.getSql("getAll"), this.userRowMapper);
     }
 
     @Override
     public void deleteAll() {
-        this.jdbcTemplate.update("delete from user");
+        this.jdbcTemplate.update(this.sqlService.getSql("deleteAll"));
     }
 
     // method로 분리 or Statement처럼 전략패턴 사용

@@ -17,6 +17,7 @@
 
     <bean id="userDao" class="org.choidh.toby_project.domain.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
+        <property name="sqlAdd" value="insert into user(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)"/>
     </bean>
 
     <bean id="userService" class="org.choidh.toby_project.domain.UserServiceImpl">
