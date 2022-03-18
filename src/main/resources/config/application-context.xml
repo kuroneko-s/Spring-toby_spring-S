@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            https://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <tx:annotation-driven proxy-target-class="true"/>
-    <context:component-scan base-package="org.choidh.toby_project"/>
+
+    <!--  일종의 빈 후처리기  -->
+    <context:annotation-config/>
 
     <bean id="userDao" class="org.choidh.toby_project.domain.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlService" ref="sqlService"/>
     </bean>
 
-    <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.XmlSqlService"/>
+    <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.XmlSqlService">
+        <property name="filePath" value="/config/sqlmap.xml"/>
+    </bean>
 
     <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
