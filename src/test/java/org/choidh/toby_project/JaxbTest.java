@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JaxbTest {
+public class JaxbTest{
 
     @Test
     public void readSqlmap() throws Exception{
@@ -24,6 +24,8 @@ public class JaxbTest {
 //        FileSystemResource fileSystemResource = new FileSystemResource("classpath:/config/sqlmap.xml");
         Path path = Paths.get(File.separatorChar + "config" + File.separatorChar + "sqlmap.xml");
 //        InputStream inputStream = getClass().getResourceAsStream(path.toString());
+
+
 
         ClassPathResource resource = new ClassPathResource(path.toString());
 
@@ -46,4 +48,5 @@ public class JaxbTest {
             assertEquals(list.get(i).getValue(), values[i]);
         }
     }
+
 }

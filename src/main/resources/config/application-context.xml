@@ -22,6 +22,8 @@
 
     <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.XmlSqlService">
         <property name="filePath" value="/config/sqlmap.xml"/>
+        <property name="sqlReader" ref="sqlService"/>
+        <property name="sqlRegistry" ref="sqlService"/>
     </bean>
 
     <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
