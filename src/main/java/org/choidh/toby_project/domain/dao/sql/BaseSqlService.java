@@ -25,7 +25,7 @@ public class BaseSqlService implements SqlService{
     public String getSql(String key) throws SqlNotFoundException {
         try {
             return this.sqlRegistry.findSql(key);
-        }catch (SqlNotFoundException e) {
+        } catch (SqlNotFoundException e) {
             throw new SqlNotFoundException(e);
         }
     }

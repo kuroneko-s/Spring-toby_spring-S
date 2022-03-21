@@ -5,6 +5,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/config/application-context.xml")
+@ContextConfiguration(locations = "/config/*-context.xml")
 public class TestConfig {
 }
