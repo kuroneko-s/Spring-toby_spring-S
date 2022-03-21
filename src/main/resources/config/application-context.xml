@@ -17,14 +17,21 @@
 
     <bean id="userDao" class="org.choidh.toby_project.domain.dao.UserDaoJdbc">
         <property name="dataSource" ref="dataSource"/>
-        <property name="sqlService" ref="sqlService"/>
+        <property name="sqlService" ref="defaultSqlService"/>
     </bean>
 
     <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.XmlSqlService">
-        <property name="filePath" value="/config/sqlmap.xml"/>
-        <property name="sqlReader" ref="sqlService"/>
-        <property name="sqlRegistry" ref="sqlService"/>
+        <property name="sqlReader" ref="sqlReader"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
+
+    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.HashMapSqlRegistry"/>
+
+    <bean id="sqlReader" class="org.choidh.toby_project.domain.dao.sql.JaxbXmlSqlReader">
+        <property name="filePath" value="/config/sqlmap.xml"/>
+    </bean>
+
+    <bean id="defaultSqlService" class="org.choidh.toby_project.domain.dao.sql.DefaultSqlService"/>
 
     <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
