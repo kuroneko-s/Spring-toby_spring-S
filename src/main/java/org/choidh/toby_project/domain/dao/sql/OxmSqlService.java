@@ -4,19 +4,17 @@ import org.choidh.toby_project.domain.dao.xjc.SqlType;
 import org.choidh.toby_project.domain.dao.xjc.Sqlmap;
 import org.choidh.toby_project.exception.SqlNotFoundException;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
 import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class OxmSqlService implements SqlService{
+
+    private final BaseSqlService baseSqlService = new BaseSqlService();
 
     private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
 
@@ -30,49 +28,45 @@ public class OxmSqlService implements SqlService{
         this.oxmSqlReader.setUnmarshaller(unmarshaller);
     }
 
-    public void setFilePath(String filePath) {
-        this.oxmSqlReader.setFilePath(filePath);
+    public void setSqlMap(Resource sqlMap) {
+        this.oxmSqlReader.setSqlMap(sqlMap);
     }
 
     @PostConstruct
     public void loadSql() {
-        this.oxmSqlReader.read(this.sqlRegistry);
+        this.baseSqlService.setSqlReader(this.oxmSqlReader);
+        this.baseSqlService.setSqlRegistry(this.sqlRegistry);
+        this.baseSqlService.loadSql();
     }
 
     @Override
     public String getSql(String key) throws SqlNotFoundException {
-        try {
-            return this.sqlRegistry.findSql(key);
-        }catch (SqlNotFoundException e) {
-            throw new SqlNotFoundException("notfound", e);
-        }
+        return this.baseSqlService.getSql(key);
     }
 
-    private final class OxmSqlReader implements SqlReader{
-        private final String DEFAULT_FILE_PATH = "/config/sqlmap.xml";
+    private class OxmSqlReader implements SqlReader{
         private Unmarshaller unmarshaller;
-        private String filePath = DEFAULT_FILE_PATH;
+        private Resource sqlMap = new ClassPathResource("/config/sqlmap.xml");
 
         public void setUnmarshaller(Unmarshaller unmarshaller) {
             this.unmarshaller = unmarshaller;
         }
 
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
+        public void setSqlMap(Resource sqlMap) {
+            this.sqlMap = sqlMap;
         }
 
         @Override
         public void read(SqlRegistry registry) {
-            Path path = Paths.get(this.filePath);
-            ClassPathResource resource = new ClassPathResource(path.toString());
             try {
-                Source source = new StreamSource(resource.getInputStream());
+                Source source = new StreamSource(sqlMap.getInputStream());
+                Sqlmap sqlmap = (Sqlmap) this.unmarshaller.unmarshal(source);
 
                 for (SqlType type: sqlmap.getSql()) {
                     sqlRegistry.registerSql(type.getKey(), type.getValue());
                 }
-            } catch (JAXBException | IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(this.sqlMap.getFilename() + "을 가져올 수 없습니다.", e);
             }
         }
     }
