@@ -22,14 +22,19 @@
 
     <bean id="sqlService" class="org.choidh.toby_project.domain.dao.sql.OxmSqlService">
         <property name="unmarshaller" ref="unmarshaller"/>
+        <property name="sqlRegistry" ref="sqlRegistry"/>
 <!--        <property name="sqlMap" value="classpath:/config/sqlmap.xml"/>-->
+    </bean>
+
+    <bean id="adminSqlService" class="org.choidh.toby_project.domain.dao.sql.AdminSqlService">
+        <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
 
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="org.choidh.toby_project.domain.dao.xjc"/>
     </bean>
 
-    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.HashMapSqlRegistry"/>
+    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.MyUpdateableSqlRegistry"/>
 
     <bean id="defaultSqlService" class="org.choidh.toby_project.domain.dao.sql.DefaultSqlService"/>
 
