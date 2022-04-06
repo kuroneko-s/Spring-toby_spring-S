@@ -11,6 +11,11 @@ public class MyUpdateableSqlRegistry implements UpdateableSqlRegistry{
     private Map<String, String> sqlMap = new HashMap<>();
 
     @Override
+    public void clean() {
+
+    }
+
+    @Override
     public void updateSql(String key, String sql) throws SqlUpdateFailureException {
 
     }

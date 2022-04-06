@@ -1,6 +1,5 @@
-package org.choidh.toby_project;
+package org.choidh.toby_project.domain;
 
-import org.choidh.toby_project.domain.dao.sql.ConcurrentHashMapSqlRegistry;
 import org.choidh.toby_project.domain.dao.sql.UpdateableSqlRegistry;
 import org.choidh.toby_project.exception.SqlNotFoundException;
 import org.choidh.toby_project.exception.SqlUpdateFailureException;
@@ -14,23 +13,21 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ConcurrentHashMapSqlRegistryTest {
+public abstract class AbstractUpdateableSqlRegistryTest {
+
     UpdateableSqlRegistry sqlRegistry;
 
     @BeforeEach
     public void setUp() {
-        sqlRegistry = new ConcurrentHashMapSqlRegistry();
+        sqlRegistry = createUpdateableSqlRegistry();
         sqlRegistry.registerSql("KEY1", "SQL1");
         sqlRegistry.registerSql("KEY2", "SQL2");
         sqlRegistry.registerSql("KEY3", "SQL3");
     }
 
-    @Test
-    public void find() {
-        checkFindResult("SQL1", "SQL2", "SQL3");
-    }
+    abstract protected UpdateableSqlRegistry createUpdateableSqlRegistry();
 
-    private void checkFindResult(String sql1, String sql2, String sql3) {
+    protected void checkFindResult(String sql1, String sql2, String sql3) {
         assertEquals(sqlRegistry.findSql("KEY1"), sql1);
         assertEquals(sqlRegistry.findSql("KEY2"), sql2);
         assertEquals(sqlRegistry.findSql("KEY3"), sql3);

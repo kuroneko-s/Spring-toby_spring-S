@@ -12,6 +12,11 @@ public class ConcurrentHashMapSqlRegistry implements UpdateableSqlRegistry {
     private Map<String, String> sqlMap = new ConcurrentHashMap<>();
 
     @Override
+    public void clean() {
+
+    }
+
+    @Override
     public void registerSql(String key, String sql) {
         this.sqlMap.put(key, sql);
     }

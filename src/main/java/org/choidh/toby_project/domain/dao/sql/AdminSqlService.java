@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 
 public class AdminSqlService implements SqlService{
 
-    protected SqlReader sqlReader;
+    protected SqlReader sqlReader = new JaxbXmlSqlReader();
     protected UpdateableSqlRegistry sqlRegistry;
 
     public void setSqlReader(SqlReader sqlReader) {

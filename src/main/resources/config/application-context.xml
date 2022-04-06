@@ -3,6 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
@@ -26,6 +27,11 @@
 <!--        <property name="sqlMap" value="classpath:/config/sqlmap.xml"/>-->
     </bean>
 
+<!--    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.ConcurrentHashMapSqlRegistry"/>-->
+    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.EmbeddedDbSqlRegistry">
+        <property name="dataSource" ref="embeddedDatabase"/>
+    </bean>
+
     <bean id="adminSqlService" class="org.choidh.toby_project.domain.dao.sql.AdminSqlService">
         <property name="sqlRegistry" ref="sqlRegistry"/>
     </bean>
@@ -33,8 +39,6 @@
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="org.choidh.toby_project.domain.dao.xjc"/>
     </bean>
-
-    <bean id="sqlRegistry" class="org.choidh.toby_project.domain.dao.sql.MyUpdateableSqlRegistry"/>
 
     <bean id="defaultSqlService" class="org.choidh.toby_project.domain.dao.sql.DefaultSqlService"/>
 
@@ -64,6 +68,10 @@
         <property name="username" value="root"/>
         <property name="password" value="963."/>
     </bean>
+
+    <jdbc:embedded-database id="embeddedDatabase" type="H2">
+        <jdbc:script location="schema.sql"/>
+    </jdbc:embedded-database>
 
     <bean id="mailSender" class="org.choidh.toby_project.mail.DummyMailSender"/>
     <bean id="message" class="org.choidh.toby_project.message.MessageFactoryBean"/>
