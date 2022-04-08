@@ -3,17 +3,25 @@ package org.choidh.toby_project.domain.user;
 import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.dao.UserDao;
 import org.choidh.toby_project.policy.UserLevelUpgradePolicy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component(value = "userService")
 public class UserServiceImpl implements UserService{
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOOMEND_FOR_GOLD = 30;
 
+    @Autowired
     protected UserDao userDao;
-    private UserLevelUpgradePolicy upgradePolicy;
+
+    @Autowired
+    private UserLevelUpgradePolicy defaultUserLevelUpgradePolicy;
+
+    @Autowired
     private MailSender mailSender;
 
     public void setMailSender(MailSender mailSender) {
@@ -24,14 +32,14 @@ public class UserServiceImpl implements UserService{
         this.userDao = userDao;
     }
 
-    public void setUpgradePolicy(UserLevelUpgradePolicy upgradePolicy) {
-        this.upgradePolicy = upgradePolicy;
+    public void setDefaultUserLevelUpgradePolicy(UserLevelUpgradePolicy defaultUserLevelUpgradePolicy) {
+        this.defaultUserLevelUpgradePolicy = defaultUserLevelUpgradePolicy;
     }
 
     public void upgradeLevels(){
         List<User> users = this.userDao.getAll();
         users.stream()
-                .filter(user -> this.upgradePolicy.canUpgradeLevel(user))
+                .filter(user -> this.defaultUserLevelUpgradePolicy.canUpgradeLevel(user))
                 .forEach(user -> {
 //                    this.upgradePolicy.upgradeLevel(user);
                     this.upgradeLevel(user);

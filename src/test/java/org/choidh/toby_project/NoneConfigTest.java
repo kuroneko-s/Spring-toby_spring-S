@@ -46,7 +46,7 @@ public class NoneConfigTest {
         userServiceImpl.setUserDao(mockUserDao);
 
         // 테스트용 upgrade 조건 설정
-        userServiceImpl.setUpgradePolicy(new DefaultUserLevelUpgradePolicy());
+        userServiceImpl.setDefaultUserLevelUpgradePolicy(new DefaultUserLevelUpgradePolicy());
 
         // 테스트 대상 실행
         userServiceImpl.upgradeLevels();
@@ -81,7 +81,7 @@ public class NoneConfigTest {
         userService.setMailSender(mockMailSender);
 
         final DefaultUserLevelUpgradePolicy upgradePolicy = new DefaultUserLevelUpgradePolicy();
-        userService.setUpgradePolicy(upgradePolicy);
+        userService.setDefaultUserLevelUpgradePolicy(upgradePolicy);
 
         userService.upgradeLevels();
 

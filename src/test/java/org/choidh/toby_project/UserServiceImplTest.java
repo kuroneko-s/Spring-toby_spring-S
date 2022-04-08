@@ -65,7 +65,7 @@ public class UserServiceImplTest extends TestConfig{
     @Autowired
     MailSender mailSender;
 
-    static class TestUserService extends UserServiceImpl{
+    public static class TestUserService extends UserServiceImpl{
         private String id = "springex4";
 
         protected void upgradeLevel(User user) {
@@ -108,7 +108,7 @@ public class UserServiceImplTest extends TestConfig{
     public void upgradeLevels() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
 
-        this.userService.setUpgradePolicy(
+        this.userService.setDefaultUserLevelUpgradePolicy(
                 context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
         );
 
@@ -130,7 +130,7 @@ public class UserServiceImplTest extends TestConfig{
         MockMailSender mailSender = new MockMailSender();
         this.userService.setMailSender(mailSender);
 
-        this.userService.setUpgradePolicy(
+        this.userService.setDefaultUserLevelUpgradePolicy(
                 context.getBean("defaultUserLevelUpgradePolicy", DefaultUserLevelUpgradePolicy.class)
         );
 
@@ -162,7 +162,7 @@ public class UserServiceImplTest extends TestConfig{
         userServiceImpl.setUserDao(mockUserDao);
 
         // 테스트용 upgrade 조건 설정
-        userServiceImpl.setUpgradePolicy(new DefaultUserLevelUpgradePolicy());
+        userServiceImpl.setDefaultUserLevelUpgradePolicy(new DefaultUserLevelUpgradePolicy());
 
         // 테스트 대상 실행
         userServiceImpl.upgradeLevels();
@@ -205,7 +205,7 @@ public class UserServiceImplTest extends TestConfig{
     @DisplayName("EventUserLevelUpgradePolicy 검증")
     public void eventUserLevelUpgradePolicy() throws SQLException {
         this.userSample.forEach(user -> this.userDao.add(user));
-        this.userService.setUpgradePolicy(
+        this.userService.setDefaultUserLevelUpgradePolicy(
                 context.getBean("eventUserLevelUpgradePolicy", EventUserLevelUpgradePolicy.class)
         ); // 전략 패턴
         // DI 기본으로는 Default class 주입중
@@ -327,7 +327,7 @@ public class UserServiceImplTest extends TestConfig{
         userServiceImpl.setUserDao(this.userDao);
 
         testUpgradePolicy.setId(userSample.get(3).getId());
-        userServiceImpl.setUpgradePolicy(testUpgradePolicy);
+        userServiceImpl.setDefaultUserLevelUpgradePolicy(testUpgradePolicy);
 
         ProxyFactoryBean factoryBean = context.getBean("&userService", ProxyFactoryBean.class);
         factoryBean.setTarget(userServiceImpl);

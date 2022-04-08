@@ -8,9 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
-class AppTests_3 {
+class AppTests_3 extends TestConfig{
 
     @Autowired
     ApplicationContext context;

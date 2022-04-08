@@ -37,7 +37,7 @@
     <bean id="userService" class="org.choidh.toby_project.domain.user.UserServiceImpl">
         <property name="userDao" ref="userDao"/>
         <property name="mailSender" ref="mailSender"/>
-        <property name="upgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
+        <property name="defaultUserLevelUpgradePolicy" ref="defaultUserLevelUpgradePolicy"/>
     </bean>
 
     <bean id="testUserService"

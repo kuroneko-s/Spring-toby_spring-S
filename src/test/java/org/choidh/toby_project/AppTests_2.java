@@ -2,15 +2,10 @@ package org.choidh.toby_project;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = "/application-context-test.xml")
-class AppTests_2 {
+class AppTests_2 extends TestConfig{
 
     @Autowired
     ApplicationContext context;

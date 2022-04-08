@@ -4,16 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.dao.sql.SqlService;
 import org.choidh.toby_project.domain.user.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 @Slf4j
+@Repository(value = "userDao")
 public class UserDaoJdbc implements UserDao{
+    @Autowired
     private SqlService sqlService;
     private JdbcTemplate jdbcTemplate;
     private final RowMapper<User> userRowMapper = (rs, rowNum) -> new User(rs.getString("id")
@@ -21,6 +25,7 @@ public class UserDaoJdbc implements UserDao{
             , Level.valueOf(rs.getInt("level")), rs.getInt("login")
             , rs.getInt("recommend"), rs.getString("email"));
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -45,15 +50,13 @@ public class UserDaoJdbc implements UserDao{
 
         jdbcTemplate.jdbcContextWithStatementStrategy(new AddStatement());
     }
- */
 
-/*
     // 익명 클래스 사용
     public void addWithAnonyClass(final User user) {
         jdbcTemplate.executeSql("insert into user(id, name, password) values(?, ?, ?)"
                         , user.getId(), user.getName(), user.getPassword());
     }
- */
+    */
 
     @Override
     public void add(User user) throws DuplicateKeyException {
