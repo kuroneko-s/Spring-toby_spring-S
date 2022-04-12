@@ -1,5 +1,6 @@
 package org.choidh.toby_project;
 
+import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.domain.dao.xjc.SqlType;
 import org.choidh.toby_project.domain.dao.xjc.Sqlmap;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OxmTest extends TestConfig{
+public class OxmTest extends TestConfig {
     @Autowired
     Unmarshaller unmarshaller;
 

@@ -1,6 +1,7 @@
 package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
+import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.user.User;
 import org.choidh.toby_project.domain.dao.UserDao;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 //@DirtiesContext
-class AppTests extends TestConfig{
+class AppTests extends TestConfig {
     // AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
     // GenericXmlApplicationContext context = new GenericXmlApplicationContext("classpath:application-context-test.xml");
     // ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("application-context-test.xml", "ExamplePath.class);

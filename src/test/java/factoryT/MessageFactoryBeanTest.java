@@ -1,6 +1,6 @@
 package factoryT;
 
-import org.choidh.toby_project.TestConfig;
+import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.message.Message;
 import org.choidh.toby_project.message.MessageFactoryBean;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,6 @@
 package org.choidh.toby_project;
 
+import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.user.User;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +19,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class EmbeddedDbTest extends TestConfig{
+public class EmbeddedDbTest extends TestConfig {
     EmbeddedDatabase db;
     JdbcTemplate template;
 

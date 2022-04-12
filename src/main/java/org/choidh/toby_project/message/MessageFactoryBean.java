@@ -1,7 +1,9 @@
 package org.choidh.toby_project.message;
 
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageFactoryBean implements FactoryBean<Message> {
 
     String message = "Factory Bean";

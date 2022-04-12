@@ -1,6 +1,7 @@
 package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
+import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.domain.*;
 import org.choidh.toby_project.domain.dao.UserDao;
 import org.choidh.toby_project.domain.user.User;
@@ -40,7 +41,7 @@ import static org.choidh.toby_project.domain.user.UserServiceImpl.MIN_RECOOMEND_
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-public class UserServiceImplTest extends TestConfig{
+public class UserServiceImplTest extends TestConfig {
 
     List<User> userSample;
 
