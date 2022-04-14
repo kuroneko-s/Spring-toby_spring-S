@@ -3,13 +3,14 @@ package org.choidh.toby_project;
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.config.TestConfig;
 import org.choidh.toby_project.domain.Level;
-import org.choidh.toby_project.domain.user.User;
 import org.choidh.toby_project.domain.dao.UserDao;
+import org.choidh.toby_project.domain.user.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
@@ -17,6 +18,7 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -267,5 +269,16 @@ class AppTests extends TestConfig {
 
         checkSameUser(newUser, u1);
         checkSameUser(user_2, u2);
+    }
+
+    @Autowired
+    DefaultListableBeanFactory beanFactory;
+
+    @Test
+    void factoryBeanTest() {
+        System.out.println("========================");
+        Arrays.stream(beanFactory.getBeanDefinitionNames()).filter(str -> str.indexOf("Property") >= 0).forEach(System.out::println);
+        System.out.println("========================");
+//        Arrays.stream(beanFactory.getBeanDefinitionNames()).forEach(str -> System.out.printf("%s \t %s\n", str, beanFactory.getBean(str).getClass().getName()));
     }
 }

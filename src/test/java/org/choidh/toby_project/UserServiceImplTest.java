@@ -2,13 +2,9 @@ package org.choidh.toby_project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.choidh.toby_project.config.TestConfig;
-import org.choidh.toby_project.domain.*;
+import org.choidh.toby_project.domain.Level;
 import org.choidh.toby_project.domain.dao.UserDao;
-import org.choidh.toby_project.domain.user.User;
-import org.choidh.toby_project.domain.user.UserService;
-import org.choidh.toby_project.domain.user.UserServiceImpl;
-import org.choidh.toby_project.domain.user.UserServiceTx;
-import org.choidh.toby_project.exception.TestUserServiceException;
+import org.choidh.toby_project.domain.user.*;
 import org.choidh.toby_project.mock.MockMailSender;
 import org.choidh.toby_project.mock.MockUserDao;
 import org.choidh.toby_project.policy.DefaultUserLevelUpgradePolicy;
@@ -49,7 +45,7 @@ public class UserServiceImplTest extends TestConfig {
     UserServiceImpl userService;
 
     @Autowired
-    TestUserService testUserService;
+    UserService testUserService;
 
     @Autowired
     UserDao userDao;
@@ -65,23 +61,6 @@ public class UserServiceImplTest extends TestConfig {
 
     @Autowired
     MailSender mailSender;
-
-    public static class TestUserService extends UserServiceImpl{
-        private String id = "springex4";
-
-        protected void upgradeLevel(User user) {
-            if (user.getId().equals(this.id)) throw new TestUserServiceException();
-            super.upgradeLevel(user);
-        }
-
-        @Override
-        public List<User> getAll() {
-            for (User user : super.getAll()) {
-                super.update(user);
-            }
-            return null;
-        }
-    }
 
     @BeforeEach
     public void setUp() {

@@ -1,9 +1,7 @@
 package org.choidh.toby_project.config;
 
-import org.choidh.toby_project.domain.dao.sql.EmbeddedDbSqlRegistry;
-import org.choidh.toby_project.domain.dao.sql.OxmSqlService;
-import org.choidh.toby_project.domain.dao.sql.SqlRegistry;
-import org.choidh.toby_project.domain.dao.sql.SqlService;
+import org.choidh.toby_project.domain.dao.sql.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -16,12 +14,15 @@ import javax.sql.DataSource;
 @Configuration
 public class SqlServiceContext {
 
+    @Autowired
+    SqlMapConfig sqlMapConfig;
+
     @Bean
     public SqlService sqlService() {
         OxmSqlService sqlService = new OxmSqlService();
         sqlService.setUnmarshaller(unmarshaller());
         sqlService.setSqlRegistry(sqlRegistry());
-//        sqlService.setSqlMap(new ClassPathResource("/config/sqlmap.xml"));
+        sqlService.setSqlMap(sqlMapConfig.getSqlMapResource());
         return sqlService;
     }
 
