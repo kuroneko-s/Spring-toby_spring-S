@@ -7,6 +7,7 @@ import org.choidh.toby_project.mail.DummyMailSender;
 import org.choidh.toby_project.policy.DefaultUserLevelUpgradePolicy;
 import org.choidh.toby_project.policy.UserLevelUpgradePolicy;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -35,12 +36,13 @@ public class AppContext implements SqlMapConfig {
     @Value("${db.password}")
     private String password;
 
-//    @Bean
+    //    @Bean
 //    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
 //        // 빈 팩토리 후처리기. 반드시 static으로 선언해야할 것
 //        // 3.1~4.0 쯤에는 이 구현체를 빈으로 등록 안하면 @Value(place_holder) 값을 못읽었을 것
 //        return new PropertySourcesPlaceholderConfigurer();
 //    }
+    private BeanDefinition definition;
 
     @Bean
     public DataSource dataSource() {
