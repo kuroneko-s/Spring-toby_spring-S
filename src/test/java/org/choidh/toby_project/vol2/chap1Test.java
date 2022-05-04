@@ -1,6 +1,5 @@
 package org.choidh.toby_project.vol2;
 
-import org.choidh.toby_project.TestClass;
 import org.choidh.toby_project.vol2.chap1.Hello;
 import org.choidh.toby_project.vol2.chap1.StringPrinter;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -158,13 +158,48 @@ public class chap1Test {
         }
     }
 
+//    private ParentClass parentClass;
+    @Autowired
+    private Map<String, FamilyClass> familyClass;
+    @Autowired
+    private FamilyClass childClass;
+
+    @Autowired
+    private ParentClass parentClass;
+
     @Test
-    public void aspectTest() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("org.choidh.toby_project");
+    public void autowiredTest() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ComponentConfig.class);
+        FamilyClass familyClass = context.getBean("familyClass", FamilyClass.class);
+        InnerClass innerClass = context.getBean("innerClass", InnerClass.class);
 
-        TestClass testClass = context.getBean("testClass", TestClass.class);
-        testClass.print();
-
+        assertEquals(familyClass.hashCode(), innerClass.getFamilyClass().hashCode());
     }
+
+   /* @Test
+    public void extendsTest() {
+        ParentClass parentClass = new ParentClass();
+        parentClass.hello();
+
+        ParentClass parentClass1 = new ChildClass();
+        parentClass1.hello();
+    }
+
+    @Test
+    public void extendsTest2() {
+        ParentClass parentClass = ParentClass.of();
+        parentClass.hello();
+
+        ParentClass childClass = ChildClass.of();
+        childClass.hello();
+    }
+
+    @Test
+    public void suplierTest() {
+        Supplier<ParentClass> supplier = ChildClass::new;
+
+        ParentClass parentClass = supplier.get();
+        parentClass.hello();
+    }*/
 
 }
